@@ -1,13 +1,16 @@
 package ru.alexeymalinov.taskautomation.core.services.guirobotservice;
 
 import ru.alexeymalinov.taskautomation.core.model.Task;
+import ru.alexeymalinov.taskautomation.core.services.Operation;
 import ru.alexeymalinov.taskautomation.core.services.RobotService;
 
 import java.awt.*;
+import java.util.Arrays;
 
 public class GuiScriptService implements RobotService {
 
     private static Robot robot;
+    private static Operation<Robot>[] operations = GuiOperation.values();
 
     static {
         try {
@@ -26,7 +29,16 @@ public class GuiScriptService implements RobotService {
         }
     }
 
+    @Override
+    public Operation[] getOperations() {
+        return operations;
+    }
+
     private void runTask(Task task){
-        throw new IllegalStateException("operation not supported");
+        Operation<Robot> operation= Arrays.stream(operations)
+                .filter((v) -> v.getName().equals(task.getOperationName()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("operation not supported"));
+        operation.apply(robot, task.getValue());
     }
 }
