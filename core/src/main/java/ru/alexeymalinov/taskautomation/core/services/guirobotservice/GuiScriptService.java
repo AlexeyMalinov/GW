@@ -1,6 +1,5 @@
 package ru.alexeymalinov.taskautomation.core.services.guirobotservice;
 
-import ru.alexeymalinov.taskautomation.core.model.GuiScriptTask;
 import ru.alexeymalinov.taskautomation.core.model.Task;
 import ru.alexeymalinov.taskautomation.core.services.RobotService;
 
@@ -21,12 +20,10 @@ public class GuiScriptService implements RobotService {
 
     @Override
     public void notifyService(Task task) {
-        if(checkTask(task)){}
-    }
-
-    @Override
-    public boolean checkTask(Task task){
-        return task instanceof GuiScriptTask;
+        if(task == null) return;
+        if(checkTask(task)){
+            runTask(task);
+        }
     }
 
     private void runTask(Task task){

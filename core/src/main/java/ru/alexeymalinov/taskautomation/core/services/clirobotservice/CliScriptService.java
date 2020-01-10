@@ -1,6 +1,5 @@
 package ru.alexeymalinov.taskautomation.core.services.clirobotservice;
 
-import ru.alexeymalinov.taskautomation.core.model.CliScriptTask;
 import ru.alexeymalinov.taskautomation.core.model.Task;
 import ru.alexeymalinov.taskautomation.core.services.RobotService;
 
@@ -16,20 +15,15 @@ public class CliScriptService implements RobotService {
         if(task == null) return;
         if(checkTask(task)){
             try {
-                runTask((CliScriptTask) task);
+                runTask(task);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    @Override
-    public boolean checkTask(Task task){
-        return task instanceof CliScriptTask;
-    }
-
-    private void runTask(CliScriptTask task) throws IOException {
-        RUNTIME.exec(task.getScript());
+    private void runTask(Task task) throws IOException {
+        RUNTIME.exec(task.getValue());
         throw new IllegalStateException("operation not supported");
     }
 }
