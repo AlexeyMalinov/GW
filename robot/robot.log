@@ -1,0 +1,10 @@
+2020-01-10 10:30:45 ERROR Launcher:20 - Ôàéë íå íàéäåí
+ 2020-01-10 10:31:26 ERROR Launcher:20 - Ôàéë íå íàéäåí
+ java.io.FileNotFoundException: .\config.properties (Не удается найти указанный файл)
+	at java.base/java.io.FileInputStream.open0(Native Method)
+	at java.base/java.io.FileInputStream.open(FileInputStream.java:213)
+	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:155)
+	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:110)
+	at java.base/java.io.FileReader.<init>(FileReader.java:60)
+	at ru.alexeymalinov.taskautomation.robot.Launcher.readConfig(Launcher.java:26)
+	at ru.alexeymalinov.taskautomation.robot.Launcher.main(Launcher.java:18)

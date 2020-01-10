@@ -29,7 +29,7 @@ public abstract class Handler implements Runnable {
     }
 
     /**
-     * тправляет задачу на выполнение в определенный момент времени
+     * Отправляет задачу на выполнение в определенный момент времени
      * @param task
      * @param localDateTime
      */
