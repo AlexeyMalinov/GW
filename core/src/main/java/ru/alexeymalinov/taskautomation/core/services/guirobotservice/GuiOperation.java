@@ -1,4 +1,4 @@
-package ru.alexeymalinov.taskautomation.core.services.clirobotservice;
+package ru.alexeymalinov.taskautomation.core.services.guirobotservice;
 
 import ru.alexeymalinov.taskautomation.core.services.Operation;
 
@@ -8,16 +8,16 @@ import java.util.function.BiFunction;
 
 public enum GuiOperation implements Operation<Robot> {
     POINT(GuiOperation::actionPoint),
-    LEFT_CLICK(GuiOperation::actionLeftClick),
-    LEFT_PRESS(GuiOperation::actionLeftPress),
-    LEFT_RELEASE(GuiOperation::actionLeftRelease),
-    RIGHT_CLICK(GuiOperation::actionRightClick),
-    RIGHT_PRESS(GuiOperation::actionRightPress),
-    RIGHT_RELEASE(GuiOperation::actionRightRelease),
-    SLEEP(GuiOperation::actionSleep),
-    DOUBLE_CLICK(GuiOperation::actionDoubleClick),
-    PRESS_KEY(GuiOperation::actionPressKey),
-    ENTER_TEXT(GuiOperation::actionEnterText);
+    LEFT_CLICK(GuiOperation::leftButtonClick),
+    LEFT_PRESS(GuiOperation::leftButtonPress),
+    LEFT_RELEASE(GuiOperation::leftButtonRelease),
+    RIGHT_CLICK(GuiOperation::rightButtonClick),
+    RIGHT_PRESS(GuiOperation::rightButtonPress),
+    RIGHT_RELEASE(GuiOperation::rightButtonRelease),
+    SLEEP(GuiOperation::sleep),
+    DOUBLE_CLICK(GuiOperation::leftButtonDoubleClick),
+    PRESS_KEY(GuiOperation::pressKey),
+    ENTER_TEXT(GuiOperation::enterText);
 
     BiFunction<Robot, String, String> action;
 
@@ -43,44 +43,44 @@ public enum GuiOperation implements Operation<Robot> {
                 y;
     }
 
-    private static String actionLeftClick(Robot robot, String s){
+    private static String leftButtonClick(Robot robot, String s){
         robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
         robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
         return "left-clicked";
     }
 
-    private static String actionLeftPress(Robot robot, String s){
+    private static String leftButtonPress(Robot robot, String s){
         robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
         return "left mouse button pressed";
     }
 
-    private static String actionLeftRelease(Robot robot, String s){
+    private static String leftButtonRelease(Robot robot, String s){
         robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
         return "left mouse button released ";
     }
-    private static String actionRightClick(Robot robot, String s){
+    private static String rightButtonClick(Robot robot, String s){
         robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
         robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
         return "left-clicked";
     }
 
-    private static String actionRightPress(Robot robot, String s){
+    private static String rightButtonPress(Robot robot, String s){
         robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
         return "left mouse button pressed";
     }
 
-    private static String actionRightRelease(Robot robot, String s){
+    private static String rightButtonRelease(Robot robot, String s){
         robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
         return "left mouse button released ";
     }
 
-    private static String actionDoubleClick(Robot robot, String s){
-        actionLeftClick(robot, s);
-        actionLeftClick(robot,s);
+    private static String leftButtonDoubleClick(Robot robot, String s){
+        leftButtonClick(robot, s);
+        leftButtonClick(robot,s);
         return "left-double-clicked";
     }
 
-    private static String actionSleep(Robot robot, String s){
+    private static String sleep(Robot robot, String s){
         try {
             Thread.sleep(Long.parseLong(s));
         } catch (InterruptedException e) {
@@ -89,12 +89,12 @@ public enum GuiOperation implements Operation<Robot> {
         return "sleep" + s + "mills";
     }
 
-    private static String actionPressKey(Robot robot, String s){
+    private static String pressKey(Robot robot, String s){
         //TODO implement method
         throw new IllegalStateException("Unsupported operation");
     }
 
-    private static String actionEnterText(Robot robot, String s){
+    private static String enterText(Robot robot, String s){
         //TODO implement method
         throw new IllegalStateException("Unsupported operation");
     }
