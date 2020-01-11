@@ -41,7 +41,7 @@ public class TaskManager {
     public void addTask(Task task){
         while(task != null){
             startTask(task);
-            task = task.getNextTask();
+            task = task.getNext();
         }
     }
 
@@ -50,7 +50,7 @@ public class TaskManager {
      * @param task - задача, которую необходимо выполнить
      * @return возвращает {@code true}, если задачу удалось отправить на выполнение, в противном случаи {@code false}
      */
-    private boolean startTask(Task task){
+    private synchronized boolean startTask(Task task){
         RobotService service = findService(task);
         if(service != null) {
             service.notifyService(task);

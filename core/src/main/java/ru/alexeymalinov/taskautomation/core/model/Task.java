@@ -80,6 +80,7 @@ public class Task{
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
         return Objects.equals(next, task.next) &&
+                Objects.equals(name, task.name) &&
                 Objects.equals(ServerLabel, task.ServerLabel) &&
                 Objects.equals(serviceName, task.serviceName) &&
                 Objects.equals(value, task.value) &&
@@ -88,13 +89,14 @@ public class Task{
 
     @Override
     public int hashCode() {
-        return Objects.hash(next, ServerLabel, serviceName, value, operationName);
+        return Objects.hash(next, name, ServerLabel, serviceName, value, operationName);
     }
 
     @Override
     public String toString() {
         return "Task{" +
-                "nextTask=" + next +
+                "next=" + next +
+                ", name='" + name + '\'' +
                 ", ServerLabel='" + ServerLabel + '\'' +
                 ", serviceName='" + serviceName + '\'' +
                 ", value='" + value + '\'' +

@@ -34,7 +34,7 @@ public abstract class Handler implements Runnable {
      * @param localDateTime
      */
     protected void schedule(Task task, LocalDateTime localDateTime) {
-        new Timer().schedule(getTimerTask(task), localDataTimeToData(localDateTime));
+        new Timer().schedule(getTimerTask(task), localDataTimeToDate(localDateTime));
     }
 
     /**
@@ -44,7 +44,7 @@ public abstract class Handler implements Runnable {
      * @param duration
      */
     protected void schedule(Task task, LocalDateTime localDateTime, Duration duration) {
-        new Timer().schedule(getTimerTask(task), localDataTimeToData(localDateTime), getPeriodInMills(duration));
+        new Timer().schedule(getTimerTask(task), localDataTimeToDate(localDateTime), getPeriodInMills(duration));
     }
 
     private TimerTask getTimerTask(Task task){
@@ -62,7 +62,7 @@ public abstract class Handler implements Runnable {
      * @param localDateTime
      * @return
      */
-    private Date localDataTimeToData(LocalDateTime localDateTime){
+    private Date localDataTimeToDate(LocalDateTime localDateTime){
         return new Date(localDateTime.toEpochSecond(ZoneOffset.UTC) * CORRECTION_FACTOR_FOR_CONVERSION_FROM_SECOND_TO_MILLS);
     }
 
