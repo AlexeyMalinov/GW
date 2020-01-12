@@ -1,14 +1,14 @@
-package ru.alexeymalinov.taskautomation;
+package ru.alexeymalinov.taskautomation.taskcreationwizard;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class TaskMasterFactory {
+public class TaskCreationWizardFactory {
 
     private List<TaskCreationWizard> taskCreationWizardList = new ArrayList<>();
 
-    private TaskMasterFactory(){
+    private TaskCreationWizardFactory(){
         initializeTaskMasterList();
     }
     private void initializeTaskMasterList(){
@@ -16,8 +16,8 @@ public class TaskMasterFactory {
         taskCreationWizardList.add(new CliTaskCreationWizard());
     }
 
-    public static TaskMasterFactory getInstance(){
-        return new TaskMasterFactory();
+    public static TaskCreationWizardFactory getInstance(){
+        return new TaskCreationWizardFactory();
     }
 
     public TaskCreationWizard getTaskMaster(){

@@ -1,7 +1,8 @@
-package ru.alexeymalinov.taskautomation;
+package ru.alexeymalinov.taskautomation.taskcreationwizard;
 
 import ru.alexeymalinov.taskautomation.core.services.RobotService;
 import ru.alexeymalinov.taskautomation.core.services.clirobotservice.CliScriptService;
+import ru.alexeymalinov.taskautomation.taskcreationwizard.TaskCreationWizard;
 
 public class CliTaskCreationWizard extends TaskCreationWizard {
 

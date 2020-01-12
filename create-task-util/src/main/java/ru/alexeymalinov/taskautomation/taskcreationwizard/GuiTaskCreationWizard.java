@@ -1,7 +1,8 @@
-package ru.alexeymalinov.taskautomation;
+package ru.alexeymalinov.taskautomation.taskcreationwizard;
 
 import ru.alexeymalinov.taskautomation.core.services.RobotService;
 import ru.alexeymalinov.taskautomation.core.services.guirobotservice.GuiScriptService;
+import ru.alexeymalinov.taskautomation.taskcreationwizard.TaskCreationWizard;
 
 import java.awt.*;
 import java.util.Scanner;

@@ -1,4 +1,4 @@
-package ru.alexeymalinov.taskautomation;
+package ru.alexeymalinov.taskautomation.taskcreationwizard;
 
 import ru.alexeymalinov.taskautomation.core.model.Task;
 import ru.alexeymalinov.taskautomation.core.model.TaskBuilder;
@@ -100,7 +100,7 @@ public abstract class TaskCreationWizard {
             }
             System.out.println("please repeat");
         }
-        TaskCreationWizard master = TaskMasterFactory.getInstance().getTaskMaster();
+        TaskCreationWizard master = TaskCreationWizardFactory.getInstance().getTaskMaster();
         return master.createTask();
     }
 
