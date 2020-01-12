@@ -3,7 +3,7 @@ package ru.alexeymalinov.taskautomation;
 import ru.alexeymalinov.taskautomation.core.services.RobotService;
 import ru.alexeymalinov.taskautomation.core.services.clirobotservice.CliScriptService;
 
-public class CliTaskMaster extends TaskMaster {
+public class CliTaskCreationWizard extends TaskCreationWizard {
 
     private RobotService service = new CliScriptService();
 

@@ -6,7 +6,7 @@ import ru.alexeymalinov.taskautomation.core.services.guirobotservice.GuiScriptSe
 import java.awt.*;
 import java.util.Scanner;
 
-public class GuiTaskMaster extends TaskMaster{
+public class GuiTaskCreationWizard extends TaskCreationWizard {
 
     private RobotService service = new GuiScriptService();
 

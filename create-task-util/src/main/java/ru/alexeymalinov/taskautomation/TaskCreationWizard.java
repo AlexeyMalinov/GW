@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public abstract class TaskMaster {
+public abstract class TaskCreationWizard {
 
     private List<RobotService> services = new ArrayList<>();
 
@@ -100,7 +100,7 @@ public abstract class TaskMaster {
             }
             System.out.println("please repeat");
         }
-        TaskMaster master = TaskMasterFactory.getInstance().getTaskMaster();
+        TaskCreationWizard master = TaskMasterFactory.getInstance().getTaskMaster();
         return master.createTask();
     }
 
