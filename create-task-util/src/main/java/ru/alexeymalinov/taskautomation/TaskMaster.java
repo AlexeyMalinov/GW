@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class TaskMaster {
+public abstract class TaskMaster {
 
     private List<RobotService> services = new ArrayList<>();
 
@@ -24,32 +24,16 @@ public class TaskMaster {
         initializeService();
         TaskBuilder builder = new TaskBuilder(getName());
         RobotService service = getService();
+        String operation = getOperation(service);
         return builder.serviceName(service.getClass().getName())
-                .operationName(getOperation(service))
-                .value(getValue())
-                .serverLabel(getServerLabel())
+                .operationName(operation)
+                .value(getValue(operation))
+//                .serverLabel(getServerLabel())
                 .next(getNext())
                 .create();
     }
 
-    private RobotService getService() {
-        System.out.println("Please select a task");
-        System.out.println("You can create the following tasks:");
-        for (RobotService service : services) {
-            System.out.println(service.getClass().getSimpleName());
-        }
-        RobotService service = null;
-        while (service == null) {
-            String serviceName = new Scanner(System.in).nextLine();
-            service = serviceOfName(serviceName);
-            if (service != null) {
-                return service;
-            }
-            System.out.println("Task type not found");
-            System.out.println("please repeat");
-        }
-        return null;
-    }
+    protected abstract RobotService getService();
 
     private RobotService serviceOfName(String name) {
         for (RobotService service : services) {
@@ -92,19 +76,16 @@ public class TaskMaster {
         return false;
     }
 
-    private String getValue() {
-        System.out.println("Set argument for operation");
-        return new Scanner(System.in).nextLine();
+    protected String getValue(String operationName){
+        return getStringObject("Please set value");
     }
 
     private String getName() {
-        System.out.println("Set task name");
-        return new Scanner(System.in).nextLine();
+        return getStringObject("Set task name");
     }
 
     private String getServerLabel() {
-        System.out.println("Set server label");
-        return new Scanner(System.in).nextLine();
+        return getStringObject("Set server label");
     }
 
     private Task getNext() {
@@ -119,8 +100,13 @@ public class TaskMaster {
             }
             System.out.println("please repeat");
         }
-        TaskMaster master = new TaskMaster();
+        TaskMaster master = TaskMasterFactory.getInstance().getTaskMaster();
         return master.createTask();
+    }
+
+    protected String getStringObject(String message){
+        System.out.println(message);
+        return new Scanner(System.in).nextLine();
     }
 
 }
