@@ -3,3 +3,35 @@
 *.iml
 **/test
 **/*.bat
+
+HELP.md
+./repository/target/
+!.repository/mvn/wrapper/maven-wrapper.jar
+!**/src/main/**
+!**/src/test/**
+
+### STS ###
+./repository/.apt_generated
+./repository/.classpath
+./repository/.factorypath
+./repository/.project
+./repository/.settings
+./repository/.springBeans
+./repository/.sts4-cache
+
+### IntelliJ IDEA ###
+repository/.idea
+repository/*.iws
+repository*.iml
+repository*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### VS Code ###
+.vscode/
