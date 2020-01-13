@@ -6,7 +6,7 @@ import ru.alexeymalinov.taskautomation.core.services.RobotService;
 import ru.alexeymalinov.taskautomation.core.services.clirobotservice.CliScriptService;
 import ru.alexeymalinov.taskautomation.core.services.guirobotservice.GuiScriptService;
 import ru.alexeymalinov.taskautomation.robot.handlers.Handler;
-import ru.alexeymalinov.taskautomation.robot.handlers.TaskFileHandler;
+import ru.alexeymalinov.taskautomation.robot.handlers.JobFileHandler;
 
 import java.io.*;
 import java.util.*;
@@ -60,7 +60,7 @@ public class Launcher {
      */
     private static List<Handler> initializeHandlers(TaskManager taskManager, Properties properties) {
         List<Handler>handlers = new ArrayList<>();
-        handlers.add(new TaskFileHandler(taskManager, properties));
+        handlers.add(new JobFileHandler(taskManager, properties));
         return handlers;
     }
 
