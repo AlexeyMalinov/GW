@@ -5,11 +5,11 @@ import ru.alexeymalinov.taskautomation.robot.TaskManager;
 import java.io.File;
 import java.util.Properties;
 
-public class TaskFileHandler extends Handler {
+public class JobFileHandler extends Handler {
 
     private final File taskFile;
 
-    public TaskFileHandler(TaskManager taskManager, Properties properties) {
+    public JobFileHandler(TaskManager taskManager, Properties properties) {
         super(taskManager);
         taskFile = new File(properties.getProperty("local.task.file.path"));
     }
