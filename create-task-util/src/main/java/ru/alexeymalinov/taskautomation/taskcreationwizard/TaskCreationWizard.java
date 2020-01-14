@@ -97,6 +97,8 @@ public abstract class TaskCreationWizard {
                 break;
             } else if ("No".equals(answer)) {
                 return null;
+            } else {
+                answer = "";
             }
             System.out.println("please repeat");
         }
