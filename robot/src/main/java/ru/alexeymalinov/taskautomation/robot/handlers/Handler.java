@@ -1,12 +1,17 @@
 package ru.alexeymalinov.taskautomation.robot.handlers;
 
+import ru.alexeymalinov.taskautomation.core.model.Job;
 import ru.alexeymalinov.taskautomation.core.model.Task;
+import ru.alexeymalinov.taskautomation.core.model.TimeIntervalType;
+import ru.alexeymalinov.taskautomation.core.repository.Repository;
+import ru.alexeymalinov.taskautomation.core.repository.RepositoryFactory;
 import ru.alexeymalinov.taskautomation.robot.TaskManager;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,18 +19,19 @@ public abstract class Handler implements Runnable {
 
     private static int CORRECTION_FACTOR_FOR_CONVERSION_FROM_SECOND_TO_MILLS = 1000;
     private final TaskManager taskManager;
+    private final Properties properties;
 
-    protected Handler(TaskManager taskManager) {
+    protected Handler(TaskManager taskManager, Properties properties) {
         this.taskManager = taskManager;
+        this.properties = properties;
     }
 
     /**
      * Отправляет задачу на выполнение
      * @param task
      */
-    protected void execute(Task task) {
+    private void execute(Task task) {
         taskManager.addTask(task);
-
     }
 
     /**
@@ -33,7 +39,7 @@ public abstract class Handler implements Runnable {
      * @param task
      * @param localDateTime
      */
-    protected void schedule(Task task, LocalDateTime localDateTime) {
+    private void schedule(Task task, LocalDateTime localDateTime) {
         new Timer().schedule(getTimerTask(task), localDataTimeToDate(localDateTime));
     }
 
@@ -43,8 +49,29 @@ public abstract class Handler implements Runnable {
      * @param localDateTime
      * @param duration
      */
-    protected void schedule(Task task, LocalDateTime localDateTime, Duration duration) {
+    private void schedule(Task task, LocalDateTime localDateTime, Duration duration) {
         new Timer().schedule(getTimerTask(task), localDataTimeToDate(localDateTime), getPeriodInMills(duration));
+    }
+
+    private void schedule(Task task, LocalDateTime localDateTime, long period, TimeIntervalType timeIntervalType) {
+        new Timer().schedule(getTimerTask(task), localDataTimeToDate(localDateTime), getPeriodInMills(period, timeIntervalType));
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    protected void schedule(Job job){
+        if(job.getPeriod() == 0){
+            schedule(getTask(job), job.startTime());
+        } else if (job.getPeriod() > 0){
+            schedule(getTask(job), job.startTime(), job.getPeriod(), job.intervalType());
+        }
+    }
+
+    private Task getTask(Job job){
+        Repository repository = new RepositoryFactory().getRepository(job.repositoryType(), properties);
+        return repository.getTask(job.getTaskName());
     }
 
     private TimerTask getTimerTask(Task task){
@@ -67,13 +94,23 @@ public abstract class Handler implements Runnable {
     }
 
     /**
-     * Переводит временной промежуток типа {@Duration} в миллисекунды,
+     * Переводит временной промежуток типа {@code Duration} в миллисекунды,
      * с учетом поправочного коэффициента
      * @param duration
      * @return
      */
     private Long getPeriodInMills(Duration duration){
         return duration.toSeconds() * CORRECTION_FACTOR_FOR_CONVERSION_FROM_SECOND_TO_MILLS;
+    }
+
+    /**
+     * Переводит временной промежуток типа {@code TimeIntervalType} в миллисекунды
+     * @param period
+     * @param type
+     * @return
+     */
+    private Long getPeriodInMills(long period, TimeIntervalType type){
+        return period * type.getFactor();
     }
 
 }
