@@ -4,12 +4,14 @@ import java.util.Properties;
 
 public class RepositoryFactory {
 
-    public Repository getRepository(Properties properties){
+    public Repository getRepository(RepositoryType type, Properties properties){
+        switch(type.name()){
+            case "LOCAL":
+                return new LocalRepository(properties);
+            case "REMOTE":
+                return new RemoteRepository(properties);
+        }
         return new LocalRepository(properties);
-    }
-
-    public Repository getRepository(String address, int port){
-        throw new IllegalStateException("Operation not supported");
     }
 
 }
