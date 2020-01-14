@@ -1,7 +1,10 @@
 package ru.alexeymalinov.taskautomation.repository.service.Impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.alexeymalinov.taskautomation.core.json.Converter;
+import ru.alexeymalinov.taskautomation.core.model.Task;
 import ru.alexeymalinov.taskautomation.repository.db.entity.TaskEntity;
 import ru.alexeymalinov.taskautomation.repository.db.repository.TaskRepository;
 import ru.alexeymalinov.taskautomation.repository.service.TaskService;
@@ -31,7 +34,16 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public void addTask(TaskEntity taskEntity) {
+    public void addTask(Task task) {
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setName(task.getName());
+        Converter<Task> converter = new Converter<>();
+        try {
+            taskEntity.setValue(converter.toJSON(task));
+        } catch (JsonProcessingException e) {
+            //TODO Логирование
+            e.printStackTrace();
+        }
         taskRepository.save(taskEntity);
     }
 

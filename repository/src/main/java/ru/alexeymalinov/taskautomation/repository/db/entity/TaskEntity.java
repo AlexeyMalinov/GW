@@ -19,7 +19,7 @@ public class TaskEntity {
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 
-    @Column(name = "value", columnDefinition = "JSONB")
+    @Column(name = "value", columnDefinition = "JSON")
     private String value;
 
     public TaskEntity() {
