@@ -39,6 +39,6 @@ public class TaskBuilder {
     }
 
     public Task create(){
-        return new Task(next, name, serverLabel, serviceName, value);
+        return new Task(next, name, serverLabel, serviceName, operationName, value);
     }
 }

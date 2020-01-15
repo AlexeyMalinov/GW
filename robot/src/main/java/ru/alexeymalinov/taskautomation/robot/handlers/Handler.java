@@ -50,10 +50,11 @@ public abstract class Handler implements Runnable {
      * @param duration
      */
     private void schedule(Task task, LocalDateTime localDateTime, Duration duration) {
-        new Timer().schedule(getTimerTask(task), localDataTimeToDate(localDateTime), getPeriodInMills(duration));
+        new Timer().schedule(getTimerTask(task), localDataTimeToDate(localDateTime), duration.toMillis());
     }
 
     private void schedule(Task task, LocalDateTime localDateTime, long period, TimeIntervalType timeIntervalType) {
+        System.out.println("schedule with period");
         new Timer().schedule(getTimerTask(task), localDataTimeToDate(localDateTime), getPeriodInMills(period, timeIntervalType));
     }
 
@@ -91,16 +92,6 @@ public abstract class Handler implements Runnable {
      */
     private Date localDataTimeToDate(LocalDateTime localDateTime){
         return new Date(localDateTime.toEpochSecond(ZoneOffset.UTC) * CORRECTION_FACTOR_FOR_CONVERSION_FROM_SECOND_TO_MILLS);
-    }
-
-    /**
-     * Переводит временной промежуток типа {@code Duration} в миллисекунды,
-     * с учетом поправочного коэффициента
-     * @param duration
-     * @return
-     */
-    private Long getPeriodInMills(Duration duration){
-        return duration.toSeconds() * CORRECTION_FACTOR_FOR_CONVERSION_FROM_SECOND_TO_MILLS;
     }
 
     /**

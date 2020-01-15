@@ -40,7 +40,7 @@ public enum GuiOperation implements Operation<Robot> {
 
     private static String actionPoint(Robot robot, String s) {
         int x = Integer.parseInt(s.split(";")[0]);
-        int y = Integer.parseInt(s.split(";")[0]);
+        int y = Integer.parseInt(s.split(";")[1]);
         robot.mouseMove(x, y);
         return "The cursor has moved to a point with coordinates " +
                 "x = " +

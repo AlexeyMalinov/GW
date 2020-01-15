@@ -6,7 +6,7 @@ public class Task{
 
     private Task next;
     private String name;
-    private String ServerLabel;
+    private String serverLabel;
     private String serviceName;
     private String value;
     private String operationName;
@@ -14,11 +14,12 @@ public class Task{
     public Task() {
     }
 
-    public Task(Task nextTask, String name, String serverLabel, String serviceName, String value) {
+    public Task(Task nextTask, String name, String serverLabel, String serviceName, String operationName, String value) {
         this.name = name;
         this.next = nextTask;
-        ServerLabel = serverLabel;
+        this.serverLabel = serverLabel;
         this.serviceName = serviceName;
+        this.operationName = operationName;
         this.value = value;
     }
 
@@ -47,11 +48,11 @@ public class Task{
     }
 
     public String getServerLabel() {
-        return ServerLabel;
+        return serverLabel;
     }
 
     public void setServerLabel(String serverLabel) {
-        ServerLabel = serverLabel;
+        this.serverLabel = serverLabel;
     }
 
     public String getServiceName() {
@@ -81,7 +82,7 @@ public class Task{
         Task task = (Task) o;
         return Objects.equals(next, task.next) &&
                 Objects.equals(name, task.name) &&
-                Objects.equals(ServerLabel, task.ServerLabel) &&
+                Objects.equals(serverLabel, task.serverLabel) &&
                 Objects.equals(serviceName, task.serviceName) &&
                 Objects.equals(value, task.value) &&
                 Objects.equals(operationName, task.operationName);
@@ -89,7 +90,7 @@ public class Task{
 
     @Override
     public int hashCode() {
-        return Objects.hash(next, name, ServerLabel, serviceName, value, operationName);
+        return Objects.hash(next, name, serverLabel, serviceName, value, operationName);
     }
 
     @Override
@@ -97,7 +98,7 @@ public class Task{
         return "Task{" +
                 "next=" + next +
                 ", name='" + name + '\'' +
-                ", ServerLabel='" + ServerLabel + '\'' +
+                ", ServerLabel='" + serverLabel + '\'' +
                 ", serviceName='" + serviceName + '\'' +
                 ", value='" + value + '\'' +
                 ", operationName='" + operationName + '\'' +

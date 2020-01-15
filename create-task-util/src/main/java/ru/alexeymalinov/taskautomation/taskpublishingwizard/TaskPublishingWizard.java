@@ -16,7 +16,6 @@ public class TaskPublishingWizard {
         repository = new RepositoryFactory().getRepository(type, properties);
     }
 
-
     public static TaskPublishingWizard getInstance(Properties properties) {
         System.out.println("Please select a repository type (LOCAL/REMOTE)");
         String reposType = new Scanner(System.in).nextLine();

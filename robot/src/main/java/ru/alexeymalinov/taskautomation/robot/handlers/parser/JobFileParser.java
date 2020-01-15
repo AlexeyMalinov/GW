@@ -18,7 +18,9 @@ public class JobFileParser {
         List<Job> jobs = new ArrayList<>();
         List<String> lines = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
         for (String line : lines) {
-            jobs.add(parseLine(line));
+            if(!line.startsWith("#")) {
+                jobs.add(parseLine(line));
+            }
         }
         return jobs;
     }
