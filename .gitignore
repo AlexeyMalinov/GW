@@ -3,6 +3,7 @@
 *.iml
 **/test
 **/*.bat
+**/*.log
 
 HELP.md
 ./repository/target/
@@ -35,3 +36,4 @@ build/
 
 ### VS Code ###
 .vscode/
+
