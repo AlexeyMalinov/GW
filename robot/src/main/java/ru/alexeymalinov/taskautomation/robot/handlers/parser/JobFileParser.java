@@ -1,7 +1,8 @@
 package ru.alexeymalinov.taskautomation.robot.handlers.parser;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.alexeymalinov.taskautomation.core.model.Job;
-import ru.alexeymalinov.taskautomation.core.model.TimeIntervalType;
 import ru.alexeymalinov.taskautomation.core.repository.RepositoryType;
 
 import java.io.IOException;
@@ -11,8 +12,13 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class JobFileParser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobFileParser.class);
+    private static final String JOB_FORMAT_ERROR = "Job format is not valid";
+    private static final int COUNT_JOB_OPTIONS = 12;
 
     public static List<Job> parseFile(String filePath) throws IOException {
         List<Job> jobs = new ArrayList<>();
@@ -28,7 +34,7 @@ public class JobFileParser {
     public static Job parseLine(String string) {
         if ((string != null) && (!string.isEmpty())) {
             String[] element = string.split(";");
-            if (element.length == 11) {
+            if (element.length == COUNT_JOB_OPTIONS) {
                 LocalDateTime startTime = LocalDateTime.of(
                         Integer.parseInt(element[3]),
                         Integer.parseInt(element[4]),
@@ -37,11 +43,14 @@ public class JobFileParser {
                         Integer.parseInt(element[7]),
                         Integer.parseInt(element[8]));
                 RepositoryType repositoryType = RepositoryType.valueOf(element[2]);
-                long period = Long.parseLong(element[9]);
-                TimeIntervalType timeIntervalType = TimeIntervalType.valueOf(element[10]);
-                return new Job(element[0],element[1], repositoryType, startTime, period, timeIntervalType);
+                int count = Integer.parseInt(element[9]);
+                long period = Long.parseLong(element[10]);
+                TimeUnit timeUnit = TimeUnit.valueOf(element[11]);
+                return new Job(element[0],element[1], repositoryType, startTime, count, period, timeUnit);
             }
+
         }
-        throw new IllegalArgumentException("Job format is not valid");
+        LOGGER.error(JOB_FORMAT_ERROR);
+        throw new IllegalArgumentException(JOB_FORMAT_ERROR);
     }
 }

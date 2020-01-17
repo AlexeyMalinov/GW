@@ -1,61 +1,29 @@
 package ru.alexeymalinov.taskautomation.robot.handlers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.alexeymalinov.taskautomation.core.model.Job;
 import ru.alexeymalinov.taskautomation.core.model.Task;
-import ru.alexeymalinov.taskautomation.core.model.TimeIntervalType;
 import ru.alexeymalinov.taskautomation.core.repository.Repository;
 import ru.alexeymalinov.taskautomation.core.repository.RepositoryFactory;
-import ru.alexeymalinov.taskautomation.robot.TaskManager;
+import ru.alexeymalinov.taskautomation.robot.executor.TaskExecutorFactory;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Date;
 import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public abstract class Handler implements Runnable {
 
-    private static int CORRECTION_FACTOR_FOR_CONVERSION_FROM_SECOND_TO_MILLS = 1000;
-    private final TaskManager taskManager;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Handler.class);
+
     private final Properties properties;
+    private final ScheduledExecutorService pool;
 
-    protected Handler(TaskManager taskManager, Properties properties) {
-        this.taskManager = taskManager;
+    protected Handler(Properties properties, ScheduledExecutorService pool) {
         this.properties = properties;
-    }
-
-    /**
-     * Отправляет задачу на выполнение
-     * @param task
-     */
-    private void execute(Task task) {
-        taskManager.addTask(task);
-    }
-
-    /**
-     * Отправляет задачу на выполнение в определенный момент времени
-     * @param task
-     * @param localDateTime
-     */
-    private void schedule(Task task, LocalDateTime localDateTime) {
-        new Timer().schedule(getTimerTask(task), localDataTimeToDate(localDateTime));
-    }
-
-    /**
-     * Отправляет задачу на выполнение в определенный момент времени и повторяет запуск через определенный промежуток времени
-     * @param task
-     * @param localDateTime
-     * @param duration
-     */
-    private void schedule(Task task, LocalDateTime localDateTime, Duration duration) {
-        new Timer().schedule(getTimerTask(task), localDataTimeToDate(localDateTime), duration.toMillis());
-    }
-
-    private void schedule(Task task, LocalDateTime localDateTime, long period, TimeIntervalType timeIntervalType) {
-        System.out.println("schedule with period");
-        new Timer().schedule(getTimerTask(task), localDataTimeToDate(localDateTime), getPeriodInMills(period, timeIntervalType));
+        this.pool = pool;
     }
 
     public Properties getProperties() {
@@ -63,11 +31,19 @@ public abstract class Handler implements Runnable {
     }
 
     protected void schedule(Job job){
-        if(job.getPeriod() == 0){
-            schedule(getTask(job), job.startTime());
+        if(job.getPeriod() == 0 || job.getCount() > 1){
+            for (int i = 1; i <= job.getCount() ; i++) {
+                LOGGER.debug("job: "+ job.getName() + " started without period");
+                pool.schedule(TaskExecutorFactory.getTaskExecutor(getTask(job), properties),getDelay(job.startTime()), TimeUnit.SECONDS);
+            }
         } else if (job.getPeriod() > 0){
-            schedule(getTask(job), job.startTime(), job.getPeriod(), job.intervalType());
+            LOGGER.debug("job: "+ job.getName() + " started with period in seconds: " + TimeUnit.SECONDS.convert(job.getPeriod(), job.timeUnit()));
+            pool.scheduleAtFixedRate(TaskExecutorFactory.getTaskExecutor(getTask(job), properties)
+                    ,getDelay(job.startTime())
+                    ,TimeUnit.SECONDS.convert(job.getPeriod(), job.timeUnit())
+                    ,TimeUnit.SECONDS);
         }
+        LOGGER.debug("job: " + job.getName() + " completed");
     }
 
     private Task getTask(Job job){
@@ -75,33 +51,13 @@ public abstract class Handler implements Runnable {
         return repository.getTask(job.getTaskName());
     }
 
-    private TimerTask getTimerTask(Task task){
-        return new TimerTask() {
-            @Override
-            public void run() {
-                execute(task);
-            }
-        };
-    }
-
     /**
-     * Преобразует объект типа {@code LocalDateTime} в объект типа {@code Date},
-     * с учетом поправочного коэффициента
-     * @param localDateTime
+     * Возвращает задержку между настоящим моментом времени и целевым, в секундах
+     * @param time
      * @return
      */
-    private Date localDataTimeToDate(LocalDateTime localDateTime){
-        return new Date(localDateTime.toEpochSecond(ZoneOffset.UTC) * CORRECTION_FACTOR_FOR_CONVERSION_FROM_SECOND_TO_MILLS);
-    }
-
-    /**
-     * Переводит временной промежуток типа {@code TimeIntervalType} в миллисекунды
-     * @param period
-     * @param type
-     * @return
-     */
-    private Long getPeriodInMills(long period, TimeIntervalType type){
-        return period * type.getFactor();
+    private Long getDelay(LocalDateTime time){
+        return Duration.between(LocalDateTime.now(), time).toSeconds();
     }
 
 }

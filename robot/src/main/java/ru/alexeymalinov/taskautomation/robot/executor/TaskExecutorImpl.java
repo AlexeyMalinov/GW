@@ -10,16 +10,19 @@ import ru.alexeymalinov.taskautomation.robot.TaskExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class TaskExecutorImpl implements TaskExecutor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskExecutorImpl.class);
 
-    private List<RobotService> services;
-    private Task task;
+    private final List<RobotService> services;
+    private final Task task;
+    private final Properties properties;
 
-    public TaskExecutorImpl(Task task){
+    public TaskExecutorImpl(Task task, Properties properties){
         this.task = task;
+        this.properties = properties;
         services = initializeServices();
     }
 
@@ -27,9 +30,9 @@ public class TaskExecutorImpl implements TaskExecutor {
      * Инициализирует список существующих в роботе сервисов
      * TODO нужно убрать инициализацию из кода, использовать Spring DI
      */
-    private static List<RobotService> initializeServices() {
+    private List<RobotService> initializeServices() {
         List<RobotService> services = new ArrayList<>();
-        services.add(new CliScriptService());
+        services.add(new CliScriptService(properties));
         services.add(new GuiScriptService());
         return services;
     }
@@ -37,10 +40,13 @@ public class TaskExecutorImpl implements TaskExecutor {
      * Запускает выполнение цепочки задач
      */
     public void run(){
-        while(task != null){
-            startTask(task);
-            task = task.getNext();
+        Task currentTask = task;
+        while(currentTask != null){
+            startTask(currentTask);
+            LOGGER.debug("get Next task : " + task.getNext());
+            currentTask = currentTask.getNext();
         }
+        LOGGER.debug("TaskExecutor has finished work");
     }
 
     /**
@@ -50,7 +56,9 @@ public class TaskExecutorImpl implements TaskExecutor {
     private void startTask(Task task){
         RobotService service = findService(task);
         if(service != null) {
+            LOGGER.info("task: " + task.getName() + " with operation: " + task.getOperationName() + " sent for execution");
             service.notifyService(task);
+            LOGGER.info("task: " + task.getName() + " with operation: " + task.getOperationName() + " completed");
         }
     }
 
@@ -60,11 +68,14 @@ public class TaskExecutorImpl implements TaskExecutor {
      * @return
      */
     private RobotService findService(Task task){
+        LOGGER.info("search service: " + task.getServiceName());
         for (RobotService robotService : services) {
             if(robotService.checkTask(task)){
+                LOGGER.info("service: " + task.getServiceName() + " found");
                 return robotService;
             }
         }
+        LOGGER.info("service: " + task.getServiceName() + " not found");
         return null;
     }
 

@@ -1,17 +1,17 @@
 package ru.alexeymalinov.taskautomation.robot.handlers;
 
-import ru.alexeymalinov.taskautomation.robot.TaskManager;
-
 import java.util.Properties;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class OrchestratorHandler extends Handler {
 
-    public OrchestratorHandler(TaskManager taskManager, Properties properties) {
-        super(taskManager, properties);
+    public OrchestratorHandler(Properties properties, ScheduledExecutorService pool) {
+        super(properties, pool);
     }
 
     @Override
     public void run() {
-
+        //TODO implement
+        throw new IllegalStateException("Unsupported operation");
     }
 }
