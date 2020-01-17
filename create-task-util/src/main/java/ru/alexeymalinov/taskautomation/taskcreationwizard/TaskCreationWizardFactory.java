@@ -1,23 +1,26 @@
 package ru.alexeymalinov.taskautomation.taskcreationwizard;
 
+import ru.alexeymalinov.taskautomation.core.repository.Repository;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class TaskCreationWizardFactory {
 
     private List<TaskCreationWizard> taskCreationWizardList = new ArrayList<>();
 
-    private TaskCreationWizardFactory(){
-        initializeTaskMasterList();
+    private TaskCreationWizardFactory(Properties properties, Repository repository){
+        initializeTaskMasterList(properties, repository);
     }
-    private void initializeTaskMasterList(){
-        taskCreationWizardList.add(new GuiTaskCreationWizard());
-        taskCreationWizardList.add(new CliTaskCreationWizard());
+    private void initializeTaskMasterList(Properties properties, Repository repository){
+        taskCreationWizardList.add(new GuiTaskCreationWizard(properties, repository));
+        taskCreationWizardList.add(new CliTaskCreationWizard(properties, repository));
     }
 
-    public static TaskCreationWizardFactory getInstance(){
-        return new TaskCreationWizardFactory();
+    public static TaskCreationWizardFactory getInstance(Properties properties, Repository repository){
+        return new TaskCreationWizardFactory(properties, repository);
     }
 
     public TaskCreationWizard getTaskMaster(){

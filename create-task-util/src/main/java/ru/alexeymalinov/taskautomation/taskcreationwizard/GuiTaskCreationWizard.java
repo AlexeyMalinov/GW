@@ -1,19 +1,24 @@
 package ru.alexeymalinov.taskautomation.taskcreationwizard;
 
+import ru.alexeymalinov.taskautomation.core.repository.Repository;
 import ru.alexeymalinov.taskautomation.core.services.RobotService;
 import ru.alexeymalinov.taskautomation.core.services.guirobotservice.GuiScriptService;
-import ru.alexeymalinov.taskautomation.taskcreationwizard.TaskCreationWizard;
 
 import java.awt.*;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class GuiTaskCreationWizard extends TaskCreationWizard {
 
     private RobotService service = new GuiScriptService();
 
+    public GuiTaskCreationWizard(Properties properties, Repository repository) {
+        super(properties, repository);
+    }
+
     @Override
     protected String getValue(String operation) {
-        if("point".equals(operation)){
+        if("POINT".equals(operation)){
             try {
                 Robot robot = new Robot();
                 System.out.println("Please move the cursor to the desired point and press Enter");
@@ -23,6 +28,8 @@ public class GuiTaskCreationWizard extends TaskCreationWizard {
                 //TODO логирование
                 e.printStackTrace();
             }
+        } else if(operation.contains("LEFT") || operation.contains("RIGHT") || operation.contains("CLICK")){
+            return "";
         }
         return getStringObject("Please set value");
     }

@@ -2,26 +2,38 @@ package ru.alexeymalinov.taskautomation.taskcreationwizard;
 
 import ru.alexeymalinov.taskautomation.core.model.Task;
 import ru.alexeymalinov.taskautomation.core.model.TaskBuilder;
+import ru.alexeymalinov.taskautomation.core.repository.Repository;
 import ru.alexeymalinov.taskautomation.core.services.Operation;
 import ru.alexeymalinov.taskautomation.core.services.RobotService;
-import ru.alexeymalinov.taskautomation.core.services.clirobotservice.CliScriptService;
-import ru.alexeymalinov.taskautomation.core.services.guirobotservice.GuiScriptService;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
 
 public abstract class TaskCreationWizard {
 
-    private List<RobotService> services = new ArrayList<>();
+    private final Properties properties;
+    private final Repository repository;
 
-    private void initializeService() {
-        services.add(new CliScriptService());
-        services.add(new GuiScriptService());
+    public TaskCreationWizard(Properties properties, Repository repository){
+        this.properties = properties;
+        this.repository = repository;
     }
 
     public Task createTask() {
-        initializeService();
+        while(true) {
+            switch (getStringObject("Do you want to create a task based on the existing?(Yes/No)")) {
+                case "Yes":
+                    return createTaskBasedOldTask();
+                case "No":
+                    return createNewTask();
+                default:
+                    System.out.println("Please try again");
+                    break;
+            }
+        }
+    }
+
+    private Task createNewTask(){
         TaskBuilder builder = new TaskBuilder(getName());
         RobotService service = getService();
         String operation = getOperation(service);
@@ -33,16 +45,28 @@ public abstract class TaskCreationWizard {
                 .create();
     }
 
-    protected abstract RobotService getService();
-
-    private RobotService serviceOfName(String name) {
-        for (RobotService service : services) {
-            if (service.getClass().getSimpleName().equals(name)) {
-                return service;
+    private Task createTaskBasedOldTask(){
+        Task task = null;
+        String taskName = "";
+        while(true) {
+            try {
+                taskName = getStringObject("Please enter an existing task name");
+                task = repository.getTask(taskName);
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println("Please try again");
             }
         }
-        return null;
+        task.setName(getStringObject("Set a new name for the task"));
+        Task endTask = task;
+        while(endTask.getNext() != null){
+            endTask = endTask.getNext();
+        }
+        endTask.setNext(getNext());
+        return task;
     }
+
+    protected abstract RobotService getService();
 
     private String getOperation(RobotService service) {
         System.out.println("Please select a operation");
@@ -89,24 +113,20 @@ public abstract class TaskCreationWizard {
     }
 
     private Task getNext() {
-        System.out.println("Would you like to add the following task?(Yes/No)");
-        String answer = "";
-        while (answer.isEmpty()) {
-            answer = new Scanner(System.in).nextLine();
-            if ("Yes".equals(answer)) {
+        while (true) {
+            switch(getStringObject("Would you like to add the following task?(Yes/No)")) {
+                case "Yes":
+                    return TaskCreationWizardFactory.getInstance(properties, repository).getTaskMaster().createTask();
+                case "No":
+                    return null;
+                default:
+                System.out.println("please repeat");
                 break;
-            } else if ("No".equals(answer)) {
-                return null;
-            } else {
-                answer = "";
             }
-            System.out.println("please repeat");
         }
-        TaskCreationWizard master = TaskCreationWizardFactory.getInstance().getTaskMaster();
-        return master.createTask();
     }
 
-    protected String getStringObject(String message){
+    public static String getStringObject(String message){
         System.out.println(message);
         return new Scanner(System.in).nextLine();
     }
