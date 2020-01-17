@@ -1,5 +1,7 @@
 package ru.alexeymalinov.taskautomation.core.services.guirobotservice;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.alexeymalinov.taskautomation.core.model.Task;
 import ru.alexeymalinov.taskautomation.core.services.Operation;
 import ru.alexeymalinov.taskautomation.core.services.RobotService;
@@ -9,6 +11,7 @@ import java.util.Arrays;
 
 public class GuiScriptService implements RobotService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GuiScriptService.class);
     private static Robot robot;
     private static Operation<Robot>[] operations = GuiOperation.values();
 
@@ -23,9 +26,11 @@ public class GuiScriptService implements RobotService {
 
     @Override
     public void notifyService(Task task) {
-        if(task == null) return;
-        if(checkTask(task)){
+        if (task == null) return;
+        if (checkTask(task)) {
+            LOGGER.info("start task: " + task.getName() + ", with operation: " + task.getOperationName());
             runTask(task);
+            LOGGER.info("completed task: " + task.getName() + ", with operation: " + task.getOperationName());
         }
     }
 
@@ -34,11 +39,22 @@ public class GuiScriptService implements RobotService {
         return operations;
     }
 
-    private void runTask(Task task){
-        Operation<Robot> operation= Arrays.stream(operations)
+    private void runTask(Task task) {
+        Operation<Robot> operation = Arrays.stream(operations)
                 .filter((v) -> v.getName().equals(task.getOperationName()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("operation not supported"));
+                .orElseThrow(() -> {
+                    RuntimeException e = new IllegalStateException("operation not supported");
+                    LOGGER.error("operation not supported", e);
+                    return e;
+                });
+        LOGGER.info("operation: " + operation + " started");
         operation.apply(robot, task.getValue());
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        LOGGER.info("operation: " + operation + " completed");
     }
 }

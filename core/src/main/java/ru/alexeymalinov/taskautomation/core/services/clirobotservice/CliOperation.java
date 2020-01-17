@@ -9,19 +9,13 @@ import java.io.InputStreamReader;
 import java.util.function.BiFunction;
 
 public enum CliOperation implements Operation<Runtime> {
-    EXECUTE(CliOperation::execute, "execute");
+    EXECUTE(CliOperation::execute),
+    EXECUTE_SCRIPT(CliOperation::executeScript);
 
     private final BiFunction<Runtime,String,String> action;
-    private final String name;
 
-    CliOperation(BiFunction<Runtime, String, String> action, String name) {
+    CliOperation(BiFunction<Runtime, String, String> action) {
         this.action = action;
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -36,12 +30,16 @@ public enum CliOperation implements Operation<Runtime> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-            return read(process);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            return read(process);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         return "";
+    }
+
+    private static String executeScript(Runtime runtime, String s){
+        return execute(runtime, s);
     }
 
     private static String read(Process process) throws IOException {
@@ -61,4 +59,8 @@ public enum CliOperation implements Operation<Runtime> {
         return sb.toString();
     }
 
+    @Override
+    public String getName() {
+        return this.name();
+    }
 }

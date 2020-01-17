@@ -18,9 +18,15 @@ public interface Repository {
     void publishTask(Task task);
 
     /**
-     * Удаляет задачу из репощитория
+     * Удаляет задачу из репозитория
      * @param taskName
      * @return
      */
     void removeTask(String taskName);
+
+    /**
+     * Проверяет наличие задачи с указанным именем в репозитории
+     * @param taskName
+     */
+    boolean taskExist(String taskName);
 }

@@ -3,6 +3,7 @@ package ru.alexeymalinov.taskautomation.core.model;
 import ru.alexeymalinov.taskautomation.core.repository.RepositoryType;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 public class Job {
     private String name;
@@ -15,7 +16,8 @@ public class Job {
     private int startMinute;
     private int startSecond;
     private long period;
-    private String unitOfTime;
+    private String timeUnit;
+    private int count;
 
     private Job() {
     }
@@ -29,8 +31,9 @@ public class Job {
                int starHours,
                int startMinute,
                int startSecond,
+               int count,
                long period,
-               String unitOfTime) {
+               String timeUnit) {
         this.name = name;
         this.taskName = taskName;
         this.repositoryType = repositoryType;
@@ -40,16 +43,18 @@ public class Job {
         this.starHour = starHours;
         this.startMinute = startMinute;
         this.startSecond = startSecond;
+        this.count = count;
         this.period = period;
-        this.unitOfTime = unitOfTime;
+        this.timeUnit = timeUnit;
     }
 
     public Job (String name,
                 String taskName,
                 RepositoryType repositoryType,
                 LocalDateTime startTime,
+                int count,
                 long period,
-                TimeIntervalType timeType){
+                TimeUnit timeUnit){
         this(
                 name,
                 taskName,
@@ -60,8 +65,9 @@ public class Job {
                 startTime.getHour(),
                 startTime.getMinute(),
                 startTime.getSecond(),
+                count,
                 period,
-                timeType.name()
+                timeUnit.name()
         );
     }
 
@@ -137,6 +143,14 @@ public class Job {
         this.startSecond = startSecond;
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
     public long getPeriod() {
         return period;
     }
@@ -145,12 +159,12 @@ public class Job {
         this.period = period;
     }
 
-    public String getUnitOfTime() {
-        return unitOfTime;
+    public String getTimeUnit() {
+        return timeUnit;
     }
 
-    public void setUnitOfTime(String unitOfTime) {
-        this.unitOfTime = unitOfTime;
+    public void setTimeUnit(String timeUnit) {
+        this.timeUnit = timeUnit;
     }
 
     public RepositoryType repositoryType(){
@@ -161,7 +175,7 @@ public class Job {
         return LocalDateTime.of(this.startYear, this.startMonth, this.startDay, this.starHour, this.startMinute, this.startSecond);
     }
 
-    public TimeIntervalType intervalType(){
-        return TimeIntervalType.valueOf(unitOfTime);
+    public TimeUnit timeUnit(){
+        return TimeUnit.valueOf(timeUnit);
     }
 }
