@@ -1,17 +1,13 @@
 package ru.alexeymalinov.taskautomation.core.repository;
 
-import java.util.Properties;
-
 public class RepositoryFactory {
 
-    public Repository getRepository(RepositoryType type, Properties properties){
-        switch(type.name()){
-            case "LOCAL":
-                return new LocalRepository(properties);
-            case "REMOTE":
-                return new RemoteRepository(properties);
+    public static Repository getRepository(String path) {
+        if (path.startsWith("http://")) {
+            return new RemoteRepository(path);
+        } else {
+            return new LocalRepository(path);
         }
-        return new LocalRepository(properties);
     }
 
 }

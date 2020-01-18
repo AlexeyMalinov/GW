@@ -12,19 +12,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
-import java.util.Properties;
 
 public class CliScriptService implements RobotService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CliScriptService.class);
     private final Runtime RUNTIME = Runtime.getRuntime();
     private Operation<Runtime>[] operations = CliOperation.values();
-    private Properties properties;
+    private final String workspace;
 
-    public CliScriptService(Properties properties) {
-        this.properties = properties;
+    public CliScriptService(){
+        this.workspace = "./";
     }
-
+    public CliScriptService(String workspace) {
+        this.workspace = workspace;
+    }
 
     @Override
     public void notifyService(Task task) {
@@ -76,8 +77,8 @@ public class CliScriptService implements RobotService {
         LOGGER.debug("Script: " + script.toString());
         String fileName = lines[0];
         LOGGER.debug("File name: " + fileName);
-        LOGGER.debug("workspace.path: " + properties.getProperty("workspace.path"));
-        Path path = Paths.get(properties.getProperty("workspace.path") + "/" + fileName);
+        LOGGER.debug("workspace.path: " + workspace);
+        Path path = Paths.get(workspace + "/" + fileName);
         LOGGER.debug("Path to save the file: " + path.toAbsolutePath().toString());
         Files.writeString(path, script.toString(), StandardOpenOption.CREATE);
         return path.toAbsolutePath().toString();

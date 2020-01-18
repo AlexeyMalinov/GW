@@ -1,14 +1,13 @@
 package ru.alexeymalinov.taskautomation.core.model;
 
-import ru.alexeymalinov.taskautomation.core.repository.RepositoryType;
-
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class Job {
     private String name;
     private String taskName;
-    private String repositoryType;
+    private String repository;
     private int startYear;
     private int startMonth;
     private int startDay;
@@ -22,9 +21,9 @@ public class Job {
     private Job() {
     }
 
-    private Job(String name,
+    public Job(String name,
                String taskName,
-               String repositoryType,
+               String repository,
                int startYear,
                int startMonth,
                int startDay,
@@ -36,7 +35,7 @@ public class Job {
                String timeUnit) {
         this.name = name;
         this.taskName = taskName;
-        this.repositoryType = repositoryType;
+        this.repository = repository;
         this.startYear = startYear;
         this.startMonth = startMonth;
         this.startDay = startDay;
@@ -48,17 +47,17 @@ public class Job {
         this.timeUnit = timeUnit;
     }
 
-    public Job (String name,
-                String taskName,
-                RepositoryType repositoryType,
-                LocalDateTime startTime,
-                int count,
-                long period,
-                TimeUnit timeUnit){
+    public Job(String name,
+               String taskName,
+               String repository,
+               LocalDateTime startTime,
+               int count,
+               long period,
+               TimeUnit timeUnit) {
         this(
                 name,
                 taskName,
-                repositoryType.name(),
+                repository,
                 startTime.getYear(),
                 startTime.getMonthValue(),
                 startTime.getDayOfMonth(),
@@ -87,12 +86,12 @@ public class Job {
         this.taskName = taskName;
     }
 
-    public String getRepositoryType() {
-        return repositoryType;
+    public String getRepository() {
+        return repository;
     }
 
-    public void setRepositoryType(String repositoryType) {
-        this.repositoryType = repositoryType;
+    public void setRepository(String repository) {
+        this.repository = repository;
     }
 
     public int getStartYear() {
@@ -167,15 +166,53 @@ public class Job {
         this.timeUnit = timeUnit;
     }
 
-    public RepositoryType repositoryType(){
-        return RepositoryType.valueOf(repositoryType);
-    }
-
-    public LocalDateTime startTime(){
+    public LocalDateTime startTime() {
         return LocalDateTime.of(this.startYear, this.startMonth, this.startDay, this.starHour, this.startMinute, this.startSecond);
     }
 
-    public TimeUnit timeUnit(){
+    public TimeUnit timeUnit() {
         return TimeUnit.valueOf(timeUnit);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Job job = (Job) o;
+        return startYear == job.startYear &&
+                startMonth == job.startMonth &&
+                startDay == job.startDay &&
+                starHour == job.starHour &&
+                startMinute == job.startMinute &&
+                startSecond == job.startSecond &&
+                period == job.period &&
+                count == job.count &&
+                name.equals(job.name) &&
+                taskName.equals(job.taskName) &&
+                repository.equals(job.repository) &&
+                timeUnit.equals(job.timeUnit);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, taskName, repository, startYear, startMonth, startDay, starHour, startMinute, startSecond, period, timeUnit, count);
+    }
+
+    @Override
+    public String toString() {
+        return "Job{" +
+                "name='" + name + '\'' +
+                ", taskName='" + taskName + '\'' +
+                ", repositoryType='" + repository + '\'' +
+                ", startYear=" + startYear +
+                ", startMonth=" + startMonth +
+                ", startDay=" + startDay +
+                ", starHour=" + starHour +
+                ", startMinute=" + startMinute +
+                ", startSecond=" + startSecond +
+                ", period=" + period +
+                ", timeUnit='" + timeUnit + '\'' +
+                ", count=" + count +
+                '}';
     }
 }

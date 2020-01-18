@@ -21,8 +21,8 @@ public class LocalRepository implements Repository{
     private final String path;
 
 
-    public LocalRepository(Properties properties) {
-        path = properties.getProperty("local.repos.dir");
+    public LocalRepository(String path) {
+        this.path = path;
     }
 
     /**

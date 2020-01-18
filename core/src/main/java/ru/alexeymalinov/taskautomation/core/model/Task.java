@@ -71,7 +71,7 @@ public class Task{
         this.value = value;
     }
 
-    public TaskBuilder builder(String name){
+    public static TaskBuilder builder(String name){
         return new TaskBuilder(name);
     }
 

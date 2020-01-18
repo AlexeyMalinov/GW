@@ -10,7 +10,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Properties;
 
 public class RemoteRepository implements Repository {
 
@@ -20,7 +19,6 @@ public class RemoteRepository implements Repository {
     private final static String DELETE_PATH = "/delete";
     private final static String ADD_PATH = "/add";
     private final static String MALFORMED_URL_EXCEPTION_DESCRIPTION = "repository url is not correct";
-    private final static String REMOTE_REPOS_URL_PARAM_NAME = "remote.repos.url";
     private final static String REPOSITORY_UNAVAILABLE = "repository unavailable";
     private final static String TASK_NOT_FOUND = "Task not found";
     private final static String UNKNOWN_ERROR = "unknown error";
@@ -29,8 +27,8 @@ public class RemoteRepository implements Repository {
     private final static String PARAMETER_NAME_TO_DELETE_TASK = "?name=";
     private final String repositoryUrl;
 
-    public RemoteRepository(Properties properties) {
-        repositoryUrl = properties.getProperty(REMOTE_REPOS_URL_PARAM_NAME);
+    public RemoteRepository(String repositoryUrl) {
+        this.repositoryUrl = repositoryUrl;
     }
 
     /**
