@@ -23,7 +23,7 @@ public class MainController {
 
     @GetMapping("/tasks/{taskName}")
     public String getTaskByName(@PathVariable("taskName") String taskName) {
-        return taskService.getTask(taskName).get(0).getValue();
+        return taskService.getTask(taskName).getValue();
     }
 
     @RequestMapping(value = "/tasks/add", method = RequestMethod.POST)

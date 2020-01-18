@@ -28,7 +28,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public List<TaskEntity> getTask(String name) {
+    public TaskEntity getTask(String name) {
         return taskRepository.findByName(name);
     }
 
@@ -56,9 +56,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public void deleteTask(String name) {
-        List<TaskEntity> entities = taskRepository.findByName(name);
-        for (TaskEntity entity : entities) {
-            taskRepository.delete(entity);
-        }
+        TaskEntity entity = taskRepository.findByName(name);
+        taskRepository.delete(entity);
     }
 }

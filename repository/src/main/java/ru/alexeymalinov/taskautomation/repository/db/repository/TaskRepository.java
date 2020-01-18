@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository <TaskEntity, Integer> {
     // https://docs.spring.io/spring-data/jpa/docs/2.2.3.RELEASE/reference/html/#jpa.query-methods.query-creation
-    List<TaskEntity> findByName(String name);
+    TaskEntity findByName(String name);
 }

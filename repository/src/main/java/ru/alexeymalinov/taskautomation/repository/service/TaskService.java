@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public interface TaskService {
     List<TaskEntity> getAllTasks();
-    List<TaskEntity> getTask(String name);
+    TaskEntity getTask(String name);
     void addTask(Task task);
     void deleteTask(Integer id);
     void deleteTask(String name);
