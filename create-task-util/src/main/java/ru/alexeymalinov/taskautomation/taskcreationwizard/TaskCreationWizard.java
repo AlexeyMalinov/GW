@@ -11,11 +11,9 @@ import java.util.Scanner;
 
 public abstract class TaskCreationWizard {
 
-    private final Properties properties;
     private final Repository repository;
 
-    public TaskCreationWizard(Properties properties, Repository repository){
-        this.properties = properties;
+    public TaskCreationWizard(Repository repository){
         this.repository = repository;
     }
 
@@ -116,7 +114,7 @@ public abstract class TaskCreationWizard {
         while (true) {
             switch(getStringObject("Would you like to add the following task?(Yes/No)")) {
                 case "Yes":
-                    return TaskCreationWizardFactory.getInstance(properties, repository).getTaskMaster().createTask();
+                    return TaskCreationWizardFactory.getInstance(repository).getTaskMaster().createTask();
                 case "No":
                     return null;
                 default:

@@ -19,9 +19,9 @@ public class CliTaskCreationWizard extends TaskCreationWizard {
     private static final Logger LOGGER = LoggerFactory.getLogger(CliTaskCreationWizard.class);
     private RobotService service;
 
-    public CliTaskCreationWizard(Properties properties, Repository repository) {
-        super(properties, repository);
-        service = new CliScriptService(properties);
+    public CliTaskCreationWizard(Repository repository) {
+        super(repository);
+        service = new CliScriptService();
     }
 
     @Override

@@ -5,15 +5,14 @@ import ru.alexeymalinov.taskautomation.core.services.RobotService;
 import ru.alexeymalinov.taskautomation.core.services.guirobotservice.GuiScriptService;
 
 import java.awt.*;
-import java.util.Properties;
 import java.util.Scanner;
 
 public class GuiTaskCreationWizard extends TaskCreationWizard {
 
     private RobotService service = new GuiScriptService();
 
-    public GuiTaskCreationWizard(Properties properties, Repository repository) {
-        super(properties, repository);
+    public GuiTaskCreationWizard(Repository repository) {
+        super(repository);
     }
 
     @Override

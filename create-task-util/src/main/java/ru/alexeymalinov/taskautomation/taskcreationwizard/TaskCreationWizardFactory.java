@@ -11,16 +11,16 @@ public class TaskCreationWizardFactory {
 
     private List<TaskCreationWizard> taskCreationWizardList = new ArrayList<>();
 
-    private TaskCreationWizardFactory(Properties properties, Repository repository){
-        initializeTaskMasterList(properties, repository);
+    private TaskCreationWizardFactory(Repository repository){
+        initializeTaskMasterList(repository);
     }
-    private void initializeTaskMasterList(Properties properties, Repository repository){
-        taskCreationWizardList.add(new GuiTaskCreationWizard(properties, repository));
-        taskCreationWizardList.add(new CliTaskCreationWizard(properties, repository));
+    private void initializeTaskMasterList(Repository repository){
+        taskCreationWizardList.add(new GuiTaskCreationWizard(repository));
+        taskCreationWizardList.add(new CliTaskCreationWizard(repository));
     }
 
-    public static TaskCreationWizardFactory getInstance(Properties properties, Repository repository){
-        return new TaskCreationWizardFactory(properties, repository);
+    public static TaskCreationWizardFactory getInstance(Repository repository){
+        return new TaskCreationWizardFactory(repository);
     }
 
     public TaskCreationWizard getTaskMaster(){

@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import ru.alexeymalinov.taskautomation.core.model.Task;
 import ru.alexeymalinov.taskautomation.core.repository.Repository;
 import ru.alexeymalinov.taskautomation.core.repository.RepositoryFactory;
-import ru.alexeymalinov.taskautomation.core.repository.RepositoryType;
 import ru.alexeymalinov.taskautomation.taskcreationwizard.TaskCreationWizard;
 import ru.alexeymalinov.taskautomation.taskcreationwizard.TaskCreationWizardFactory;
 import ru.alexeymalinov.taskautomation.taskpublishingwizard.TaskPublishingWizard;
@@ -33,7 +32,7 @@ public class Launcher {
         }
         Repository repository = getRepository(properties);
         TaskPublishingWizard taskPublishingWizard = TaskPublishingWizard.getInstance(repository);
-        TaskCreationWizard master = TaskCreationWizardFactory.getInstance(properties, repository).getTaskMaster();
+        TaskCreationWizard master = TaskCreationWizardFactory.getInstance(repository).getTaskMaster();
         Task task = master.createTask();
         boolean taskCreated = taskPublishingWizard.publishTask(task);
         if (!taskCreated) {
@@ -46,9 +45,9 @@ public class Launcher {
         while (true) {
             switch (reposType) {
                 case "LOCAL":
-                    return new RepositoryFactory().getRepository(RepositoryType.LOCAL, properties);
+                    return RepositoryFactory.getRepository(properties.getProperty("local.repos.dir"));
                 case "REMOTE":
-                    return new RepositoryFactory().getRepository(RepositoryType.REMOTE, properties);
+                    return RepositoryFactory.getRepository(properties.getProperty("remote.repos.url"));
                 default:
                     reposType = TaskCreationWizard.getStringObject("Please try again");
             }
