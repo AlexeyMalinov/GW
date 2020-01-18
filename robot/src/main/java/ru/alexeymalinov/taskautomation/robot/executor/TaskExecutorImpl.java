@@ -10,6 +10,7 @@ import ru.alexeymalinov.taskautomation.robot.TaskExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
 public class TaskExecutorImpl implements TaskExecutor {
@@ -67,5 +68,25 @@ public class TaskExecutorImpl implements TaskExecutor {
         return null;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskExecutorImpl that = (TaskExecutorImpl) o;
+        return Objects.equals(services, that.services) &&
+                Objects.equals(task, that.task);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(services, task);
+    }
+
+    @Override
+    public String toString() {
+        return "TaskExecutorImpl{" +
+                "services=" + services +
+                ", task=" + task +
+                '}';
+    }
 }

@@ -2,7 +2,6 @@ package ru.alexeymalinov.taskautomation.robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.alexeymalinov.taskautomation.core.repository.Repository;
 import ru.alexeymalinov.taskautomation.core.services.RobotService;
 import ru.alexeymalinov.taskautomation.core.services.clirobotservice.CliScriptService;
 import ru.alexeymalinov.taskautomation.core.services.guirobotservice.GuiScriptService;
@@ -44,7 +43,6 @@ public class Launcher {
 
     /**
      * Инициализирует все доступные в данном роботе обработчики заданий
-     * TODO нужно убрать инициализацию из кода, использовать Spring DI
      */
     private static List<Handler> initializeHandlers(Properties properties, ScheduledExecutorService pool) {
         List<Handler>handlers = new ArrayList<>();
@@ -54,7 +52,6 @@ public class Launcher {
 
     /**
      * Инициализирует список существующих в роботе сервисов
-     * TODO нужно убрать инициализацию из кода, использовать Spring DI
      */
     private static List<RobotService> initializeServices(Properties properties) {
         List<RobotService> services = new ArrayList<>();
