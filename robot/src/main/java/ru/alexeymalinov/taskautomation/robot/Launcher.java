@@ -2,6 +2,10 @@ package ru.alexeymalinov.taskautomation.robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.alexeymalinov.taskautomation.core.repository.Repository;
+import ru.alexeymalinov.taskautomation.core.services.RobotService;
+import ru.alexeymalinov.taskautomation.core.services.clirobotservice.CliScriptService;
+import ru.alexeymalinov.taskautomation.core.services.guirobotservice.GuiScriptService;
 import ru.alexeymalinov.taskautomation.robot.handlers.Handler;
 import ru.alexeymalinov.taskautomation.robot.handlers.JobFileHandler;
 
@@ -22,7 +26,6 @@ public class Launcher {
         Properties properties = new Properties();
         try {
             properties = readConfig();
-            System.out.println(properties.get("local.repos.dir"));
         } catch (IOException exc) {
             LOGGER.error(errorsText.getString("error.io"), exc);
         }
@@ -45,8 +48,19 @@ public class Launcher {
      */
     private static List<Handler> initializeHandlers(Properties properties, ScheduledExecutorService pool) {
         List<Handler>handlers = new ArrayList<>();
-        handlers.add(new JobFileHandler(properties, pool));
+        handlers.add(new JobFileHandler(initializeServices(properties), pool, properties.getProperty("local.job.file.path")));
         return handlers;
+    }
+
+    /**
+     * Инициализирует список существующих в роботе сервисов
+     * TODO нужно убрать инициализацию из кода, использовать Spring DI
+     */
+    private static List<RobotService> initializeServices(Properties properties) {
+        List<RobotService> services = new ArrayList<>();
+        services.add(new CliScriptService(properties.getProperty("workspace.path")));
+        services.add(new GuiScriptService());
+        return services;
     }
 
     private static void stopApp(ExecutorService...pools){

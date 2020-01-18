@@ -18,25 +18,13 @@ public class TaskExecutorImpl implements TaskExecutor {
 
     private final List<RobotService> services;
     private final Task task;
-    private final Properties properties;
 
-    public TaskExecutorImpl(Task task, Properties properties){
+    public TaskExecutorImpl(Task task, List<RobotService> services){
         this.task = task;
-        this.properties = properties;
-        services = initializeServices();
+        this.services = services;
     }
 
-    /**
-     * Инициализирует список существующих в роботе сервисов
-     * TODO нужно убрать инициализацию из кода, использовать Spring DI
-     */
-    private List<RobotService> initializeServices() {
-        List<RobotService> services = new ArrayList<>();
-        services.add(new CliScriptService(properties));
-        services.add(new GuiScriptService());
-        return services;
-    }
-    /**
+     /**
      * Запускает выполнение цепочки задач
      */
     public void run(){

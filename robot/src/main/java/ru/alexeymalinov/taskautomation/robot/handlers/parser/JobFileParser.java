@@ -3,7 +3,6 @@ package ru.alexeymalinov.taskautomation.robot.handlers.parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.alexeymalinov.taskautomation.core.model.Job;
-import ru.alexeymalinov.taskautomation.core.repository.RepositoryType;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -42,11 +41,11 @@ public class JobFileParser {
                         Integer.parseInt(element[6]),
                         Integer.parseInt(element[7]),
                         Integer.parseInt(element[8]));
-                RepositoryType repositoryType = RepositoryType.valueOf(element[2]);
+                String repository = (element[2]);
                 int count = Integer.parseInt(element[9]);
                 long period = Long.parseLong(element[10]);
                 TimeUnit timeUnit = TimeUnit.valueOf(element[11]);
-                return new Job(element[0],element[1], repositoryType, startTime, count, period, timeUnit);
+                return new Job(element[0],element[1], repository, startTime, count, period, timeUnit);
             }
 
         }
