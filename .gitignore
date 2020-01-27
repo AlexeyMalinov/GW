@@ -1,9 +1,10 @@
 **/target
 **/.idea
 *.iml
-**/test
+#**/test
 **/*.bat
 **/*.log
+**/*.log.*
 
 HELP.md
 ./repository/target/
