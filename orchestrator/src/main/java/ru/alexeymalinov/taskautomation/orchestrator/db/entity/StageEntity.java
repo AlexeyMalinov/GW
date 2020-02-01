@@ -36,6 +36,22 @@ public class StageEntity {
     @Column(name = "next_stage_id")
     private Integer nextStageId;
 
+    public StageEntity(PipelineEntity pipeline) {
+        this.pipeline = pipeline;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public PipelineEntity getPipeline() {
+        return pipeline;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

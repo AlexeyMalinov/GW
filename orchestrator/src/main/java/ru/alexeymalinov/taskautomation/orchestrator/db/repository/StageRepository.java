@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface StageRepository extends JpaRepository <StageEntity, Integer> {
     List<StageEntity> findByPipeline(PipelineEntity pipeline);
+    StageEntity findByNameAndPipeline(String name, PipelineEntity pipelineEntity);
 }

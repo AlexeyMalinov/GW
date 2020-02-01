@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS job CASCADE;
 CREATE TABLE public.job (
   id SERIAL PRIMARY KEY, -- http://www.postgresqltutorial.com/postgresql-primary-key/
   name VARCHAR(255) UNIQUE NOT NULL, -- https://www.postgresql.org/docs/10/datatype-character.html
+  task_name VARCHAR(255) NOT NULL,
   stage_id INTEGER REFERENCES public.stage(id) NOT NULL,
   repository_url VARCHAR(255) NOT NULL,
   robots_group_id INTEGER REFERENCES public.robots_group(id) NOT NULL,

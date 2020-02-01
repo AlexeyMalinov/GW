@@ -2,30 +2,26 @@ package ru.alexeymalinov.taskautomation.orchestrator.ui.editor;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
-import ru.alexeymalinov.taskautomation.orchestrator.db.entity.StageEntity;
-import ru.alexeymalinov.taskautomation.orchestrator.db.repository.StageRepository;
-import ru.alexeymalinov.taskautomation.orchestrator.ui.view.StageView;
+import ru.alexeymalinov.taskautomation.orchestrator.db.entity.PipelineEntity;
+import ru.alexeymalinov.taskautomation.orchestrator.db.repository.PipelineRepository;
+import ru.alexeymalinov.taskautomation.orchestrator.ui.view.PipelineView;
 
 @SpringComponent
 @UIScope
-public class PipelineEditor extends VerticalLayout implements KeyNotifier {
-    private final StageRepository repository;
+public class MainEditor extends VerticalLayout implements KeyNotifier {
+    private final PipelineRepository repository;
 
-    private StageEntity entity;
+    private PipelineEntity entity;
 
     TextField name = new TextField("Name");
-    IntegerField previousStageId = new IntegerField("PreviousId");
-    IntegerField nextStageId = new IntegerField("NextId");
 
     Button save = new Button("Save", VaadinIcon.CHECK.create());
     Button cancel = new Button("Cancel", VaadinIcon.CLOSE.create());
@@ -34,13 +30,13 @@ public class PipelineEditor extends VerticalLayout implements KeyNotifier {
 
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete, edit);
 
-    Binder<StageEntity> binder = new Binder<>(StageEntity.class);
+    Binder<PipelineEntity> binder = new Binder<>(PipelineEntity.class);
     private ChangeHandler changeHandler;
 
 
-    public PipelineEditor(StageRepository repository){
+    public MainEditor(PipelineRepository repository){
         this.repository = repository;
-        add(name, previousStageId, nextStageId, actions);
+        add(name, actions);
 
         binder.bindInstanceFields(this);
 
@@ -53,8 +49,8 @@ public class PipelineEditor extends VerticalLayout implements KeyNotifier {
 
         save.addClickListener(e -> save());
         delete.addClickListener(e -> delete());
-        cancel.addClickListener(e -> editStage(entity));
-        edit.addClickListener(e -> UI.getCurrent().navigate(StageView.class, entity.getId()));
+        cancel.addClickListener(e -> edit(entity));
+        edit.addClickListener(e -> edit.getUI().ifPresent(ui -> ui.navigate(PipelineView.class, entity.getId())));
         setVisible(false);
     }
 
@@ -64,23 +60,23 @@ public class PipelineEditor extends VerticalLayout implements KeyNotifier {
     }
 
     void delete(){
-        StageEntity stageEntity = repository.findByNameAndPipeline(entity.getName(), entity.getPipeline());
-        repository.delete(stageEntity);
+        PipelineEntity pipelineEntity = repository.findByName(entity.getName());
+        repository.delete(pipelineEntity);
         changeHandler.onChange();
     }
 
-    public final void editStage(StageEntity stageEntity) {
-        if (stageEntity == null) {
+    public final void edit(PipelineEntity pipelineEntity) {
+        if (pipelineEntity == null) {
             setVisible(false);
             return;
         }
-        final boolean persisted = stageEntity.getName()!= null;
+        final boolean persisted = pipelineEntity.getName()!= null;
         if (persisted) {
             // Find fresh entity for editing
-            entity = repository.findByNameAndPipeline(stageEntity.getName(), stageEntity.getPipeline());
+            entity = repository.findByName(pipelineEntity.getName());
         }
         else {
-            this.entity = stageEntity;
+            entity = pipelineEntity;
         }
         cancel.setVisible(persisted);
         edit.setVisible(persisted);
@@ -88,7 +84,7 @@ public class PipelineEditor extends VerticalLayout implements KeyNotifier {
         // Bind customer properties to similarly named fields
         // Could also use annotation or "manual binding" or programmatically
         // moving values from fields to entities before saving
-        binder.setBean(this.entity);
+        binder.setBean(entity);
 
         setVisible(true);
 
@@ -101,4 +97,5 @@ public class PipelineEditor extends VerticalLayout implements KeyNotifier {
         // is clicked
         changeHandler = handler;
     }
+
 }

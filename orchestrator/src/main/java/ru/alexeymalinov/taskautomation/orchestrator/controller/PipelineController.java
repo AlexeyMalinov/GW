@@ -8,11 +8,11 @@ import ru.alexeymalinov.taskautomation.orchestrator.service.PipelineService;
 import java.util.List;
 
 @RestController
-public class MainController {
+public class PipelineController {
 
     PipelineService pipelineService;
 
-    public MainController(PipelineService pipelineService) {
+    public PipelineController(PipelineService pipelineService) {
         this.pipelineService = pipelineService;
     }
 
