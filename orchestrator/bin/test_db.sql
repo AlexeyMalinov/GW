@@ -1,0 +1,15 @@
+--insert into robot values (nextval('robot_id_seq'),'robot1');
+--insert into robots_group values(nextval('robots_group_id_seq'),'group1');
+--update robots_group SET robot_id = 1 where name='group1';
+--insert into robot values (nextval('robot_id_seq'),'robot2');
+--insert INTO robots_group values(nextval('robots_group_id_seq'),'group1',1);
+--insert INTO robots_group values(nextval('robots_group_id_seq'),'group1',2);
+
+--INSERT INTO pipeline VALUES(nextval('pipeline_id_seq'), 'pipeline1');
+--INSERT INTO stage VALUES(nextval('stage_id_seq'), 'stage1', 1);
+--INSERT INTO stage VALUES(nextval('stage_id_seq'), 'stage2', 1);
+--INSERT INTO stage VALUES(nextval('stage_id_seq'), 'stage3', 1);
+--UPDATE stage SET next_stage_id = 2 WHERE name = 'stage1';
+--UPDATE stage SET next_stage_id = 3 WHERE name = 'stage2';
+--UPDATE stage SET previous_stage_id = 1 WHERE name = 'stage2';
+--UPDATE stage SET previous_stage_id = 2 WHERE name = 'stage3';
