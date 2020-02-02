@@ -1,11 +1,15 @@
 package ru.alexeymalinov.taskautomation.orchestrator.db.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
 @Entity
 @Table(name = "robots_group")
 public class RobotsGroupEntity {
@@ -19,6 +23,34 @@ public class RobotsGroupEntity {
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 
-    @Column(name = "robot_id")
-    private Integer robotId;
+    @ManyToMany
+    @JoinTable(name = "robots_group_robots",
+            joinColumns = @JoinColumn(name = "robots_group_id"),
+    inverseJoinColumns = @JoinColumn(name = "robot_id"))
+    private List<RobotEntity> robots;
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public List<RobotEntity> getRobots() {
+        return robots;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RobotsGroupEntity that = (RobotsGroupEntity) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 }

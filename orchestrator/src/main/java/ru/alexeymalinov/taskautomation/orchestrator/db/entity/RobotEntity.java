@@ -3,6 +3,7 @@ package ru.alexeymalinov.taskautomation.orchestrator.db.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -17,5 +18,8 @@ public class RobotEntity {
 
     @Column(name = "name", unique = true, nullable = false)
     private String name;
+
+    @ManyToMany(mappedBy = "robots", fetch = FetchType.EAGER)
+    private List<RobotsGroupEntity> robotsGroups;
 
 }

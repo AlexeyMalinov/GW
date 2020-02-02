@@ -18,12 +18,10 @@ public class MainView extends VerticalLayout {
     private PipelineRepository repository;
     private Grid<PipelineEntity> grid;
     private MainEditor editor;
-    private final Button addPipelineButton;
 
     MainView(PipelineRepository repository, MainEditor editor){
         this.repository = repository;
         this.editor = editor;
-        this.addPipelineButton = new Button("New Pipeline", VaadinIcon.PLUS.create());
         this.grid = new Grid<>(PipelineEntity.class);
     }
 
@@ -31,7 +29,10 @@ public class MainView extends VerticalLayout {
     private void printMainView(){
         listPipelines();
 
-        HorizontalLayout actions = new HorizontalLayout(addPipelineButton);
+        Button addPipelineButton = new Button("New Pipeline", VaadinIcon.PLUS.create());
+        Button robotGroupViewButton = new Button("Groups of robots", VaadinIcon.GROUP.create());
+
+        HorizontalLayout actions = new HorizontalLayout(addPipelineButton, robotGroupViewButton);
         add(actions, grid, this.editor);
 
         grid.removeColumnByKey("stages");
