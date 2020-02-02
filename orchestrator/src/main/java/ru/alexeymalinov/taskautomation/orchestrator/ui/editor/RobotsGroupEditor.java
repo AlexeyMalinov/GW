@@ -14,6 +14,7 @@ import ru.alexeymalinov.taskautomation.orchestrator.db.entity.PipelineEntity;
 import ru.alexeymalinov.taskautomation.orchestrator.db.entity.RobotsGroupEntity;
 import ru.alexeymalinov.taskautomation.orchestrator.db.repository.RobotsGroupRepository;
 import ru.alexeymalinov.taskautomation.orchestrator.ui.view.PipelineView;
+import ru.alexeymalinov.taskautomation.orchestrator.ui.view.RobotView;
 
 @SpringComponent
 @UIScope
@@ -51,7 +52,7 @@ public class RobotsGroupEditor extends VerticalLayout implements KeyNotifier {
         save.addClickListener(e -> save());
         delete.addClickListener(e -> delete());
         cancel.addClickListener(e -> edit(entity));
-        edit.addClickListener(e -> edit.getUI().ifPresent(ui -> ui.navigate(PipelineView.class, entity.getId())));
+        edit.addClickListener(e -> edit.getUI().ifPresent(ui -> ui.navigate(RobotView.class, entity.getId())));
         setVisible(false);
     }
 

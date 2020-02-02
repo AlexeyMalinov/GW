@@ -6,6 +6,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import ru.alexeymalinov.taskautomation.orchestrator.db.entity.PipelineEntity;
 import ru.alexeymalinov.taskautomation.orchestrator.db.entity.RobotsGroupEntity;
 import ru.alexeymalinov.taskautomation.orchestrator.db.repository.RobotsGroupRepository;
 import ru.alexeymalinov.taskautomation.orchestrator.ui.editor.ChangeHandler;
@@ -22,7 +23,7 @@ public class RobotsGroupView extends VerticalLayout {
     private ChangeHandler changeHandler;
 
 
-    public RobotsGroupView(RobotsGroupRepository repository) {
+    public RobotsGroupView(RobotsGroupRepository repository, RobotsGroupEditor editor) {
 
         this.repository = repository;
         this.editor = editor;
@@ -31,21 +32,19 @@ public class RobotsGroupView extends VerticalLayout {
     }
 
     @PostConstruct
-    private void printMainView(){
+    private void printMainView() {
         listRobotsGroups();
 
-        Button addPipelineButton = new Button("New robots group", VaadinIcon.PLUS.create());
+        Button addRobotsGroupButton = new Button("New group of robots", VaadinIcon.PLUS.create());
 
         Button backPipelineButton = new Button("Pipelines", VaadinIcon.ARROW_BACKWARD.create());
         backPipelineButton.addClickListener(e -> backPipelineButton.getUI().ifPresent((ui -> ui.navigate(MainView.class))));
 
-        HorizontalLayout actions = new HorizontalLayout(addPipelineButton, backPipelineButton);
+        HorizontalLayout actions = new HorizontalLayout(addRobotsGroupButton, backPipelineButton);
         add(actions, grid, editor);
 
-        grid.removeColumnByKey("robotId");
         grid.setHeight("300px");
-        grid.setColumns("id");
-        grid.setColumns("name");
+        grid.setColumns("id", "name");
         grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
         editor.setChangeHandler(() -> {
@@ -53,9 +52,15 @@ public class RobotsGroupView extends VerticalLayout {
             listRobotsGroups();
         });
 
+        grid.asSingleSelect().addValueChangeListener(e -> {
+            editor.edit(e.getValue());
+        });
+
+        addRobotsGroupButton.addClickListener(e -> editor.edit(new RobotsGroupEntity()));
+
     }
 
-    private void listRobotsGroups(){
+    private void listRobotsGroups() {
         grid.setItems(repository.findAll());
     }
 

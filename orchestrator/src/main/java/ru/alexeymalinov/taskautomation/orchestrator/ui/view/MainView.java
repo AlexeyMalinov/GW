@@ -1,5 +1,6 @@
 package ru.alexeymalinov.taskautomation.orchestrator.ui.view;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -50,6 +51,7 @@ public class MainView extends VerticalLayout {
         });
 
         addPipelineButton.addClickListener(e -> editor.edit(new PipelineEntity()));
+        robotGroupViewButton.addClickListener(e -> robotGroupViewButton.getUI().ifPresent(ui -> ui.navigate(RobotsGroupView.class)));
 
     }
 

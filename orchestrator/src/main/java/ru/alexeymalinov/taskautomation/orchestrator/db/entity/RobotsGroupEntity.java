@@ -5,7 +5,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,10 +22,7 @@ public class RobotsGroupEntity {
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 
-    @ManyToMany
-    @JoinTable(name = "robots_group_robots",
-            joinColumns = @JoinColumn(name = "robots_group_id"),
-    inverseJoinColumns = @JoinColumn(name = "robot_id"))
+    @OneToMany(mappedBy = "robotsGroup", fetch = FetchType.EAGER)
     private List<RobotEntity> robots;
 
     public String getName() {
