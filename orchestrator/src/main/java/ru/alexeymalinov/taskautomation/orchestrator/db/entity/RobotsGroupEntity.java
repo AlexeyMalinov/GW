@@ -5,9 +5,11 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @Setter
 @Entity
 @Table(name = "robots_group")
@@ -22,20 +24,8 @@ public class RobotsGroupEntity {
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "robotsGroup", fetch = FetchType.EAGER)
-    private List<RobotEntity> robots;
-
-    public String getName() {
-        return name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public List<RobotEntity> getRobots() {
-        return robots;
-    }
+    @OneToMany(mappedBy = "robotsGroup", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private Set<RobotEntity> robots;
 
     @Override
     public boolean equals(Object o) {
@@ -48,5 +38,14 @@ public class RobotsGroupEntity {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    @Override
+    public String toString() {
+        return "RobotsGroupEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", robots=" + robots +
+                '}';
     }
 }

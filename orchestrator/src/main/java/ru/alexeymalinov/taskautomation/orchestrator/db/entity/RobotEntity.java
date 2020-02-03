@@ -1,14 +1,12 @@
 package ru.alexeymalinov.taskautomation.orchestrator.db.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
+@Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,18 +29,6 @@ public class RobotEntity {
 
     public RobotEntity(RobotsGroupEntity robotsGroup) {
         this.robotsGroup = robotsGroup;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public RobotsGroupEntity getRobotsGroup() {
-        return robotsGroup;
     }
 
     @Override

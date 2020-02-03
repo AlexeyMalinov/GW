@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "pipeline")
-public class PipelineEntity {
+public class PipelineEntity implements PipelineElement{
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
@@ -25,14 +25,6 @@ public class PipelineEntity {
 
     @OneToMany(mappedBy = "pipeline", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<StageEntity> stages;
-
-    public String getName() {
-        return name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
 
     @Override
     public boolean equals(Object o) {

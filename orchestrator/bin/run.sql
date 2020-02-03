@@ -5,10 +5,12 @@ DROP TABLE IF EXISTS run;
 -- Создание таблиц. http://www.postgresqltutorial.com/postgresql-create-table/
 CREATE TABLE public.run (
   id SERIAL PRIMARY KEY, -- http://www.postgresqltutorial.com/postgresql-primary-key/
+  uid VARCHAR(255) NOT NULL,
   start_time timestamp NOT NULL,
   pipeline_id INTEGER REFERENCES public.pipeline(id) NOT NULL,
   stage_id INTEGER REFERENCES public.stage(id) NOT NULL,
   job_id INTEGER REFERENCES public.job(id) NOT NULL,
+  robot_id INTEGER REFERENCES public.robot(id) NOT NULL,
   status VARCHAR(16) NOT NULL,
   description TEXT
 );

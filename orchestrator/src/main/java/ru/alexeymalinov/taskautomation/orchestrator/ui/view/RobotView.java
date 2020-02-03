@@ -26,7 +26,6 @@ public class RobotView extends AbstractView<RobotRepository, RobotEntity, RobotE
         this.robotsGroupRepository = robotsGroupRepository;
     }
 
-    @PostConstruct
     @Override
     protected void print(){
         listItem();
@@ -35,7 +34,7 @@ public class RobotView extends AbstractView<RobotRepository, RobotEntity, RobotE
         addRobotButton.addClickListener(e -> editor.edit(new RobotEntity(robotsGroupEntity)));
 
         Button backRobotGroupButton = new Button("Groups of robots", VaadinIcon.ARROW_BACKWARD.create());
-        backRobotGroupButton.addClickListener(e -> backRobotGroupButton.getUI().ifPresent((ui -> ui.navigate(MainView.class))));
+        backRobotGroupButton.addClickListener(e -> backRobotGroupButton.getUI().ifPresent((ui -> ui.navigate(RobotsGroupView.class))));
 
         HorizontalLayout actions = new HorizontalLayout(addRobotButton, backMainButton, backRobotGroupButton);
 
@@ -50,5 +49,6 @@ public class RobotView extends AbstractView<RobotRepository, RobotEntity, RobotE
     @Override
     public void setParameter(BeforeEvent beforeEvent, Integer integer) {
         robotsGroupEntity = robotsGroupRepository.findById(integer).get();
+        print();
     }
 }

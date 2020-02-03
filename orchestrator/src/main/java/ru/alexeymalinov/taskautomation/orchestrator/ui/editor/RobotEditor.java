@@ -22,9 +22,14 @@ public class RobotEditor extends AbstractEditor<RobotRepository, RobotEntity> {
 
     @Override
     public void printEditor() {
-        setSpacing(true);
         binder.bindInstanceFields(this);
         add(name, actions);
+    }
+
+    @Override
+    public void save() {
+        repository.save(entity);
+        changeHandler.onChange();
     }
 
     @Override

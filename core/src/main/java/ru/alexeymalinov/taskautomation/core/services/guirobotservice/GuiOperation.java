@@ -7,7 +7,6 @@ import ru.alexeymalinov.taskautomation.core.services.Operation;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;

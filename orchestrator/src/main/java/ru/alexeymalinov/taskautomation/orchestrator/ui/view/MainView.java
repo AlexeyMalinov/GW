@@ -1,11 +1,9 @@
 package ru.alexeymalinov.taskautomation.orchestrator.ui.view;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import ru.alexeymalinov.taskautomation.orchestrator.db.entity.PipelineEntity;
 import ru.alexeymalinov.taskautomation.orchestrator.db.repository.PipelineRepository;
@@ -15,47 +13,30 @@ import javax.annotation.PostConstruct;
 
 
 @Route(value = "")
-public class MainView extends VerticalLayout {
-    private PipelineRepository repository;
-    private Grid<PipelineEntity> grid;
-    private MainEditor editor;
+public class MainView extends AbstractView<PipelineRepository, PipelineEntity, MainEditor> {
 
     MainView(PipelineRepository repository, MainEditor editor){
-        this.repository = repository;
-        this.editor = editor;
-        this.grid = new Grid<>(PipelineEntity.class);
+        super(repository,editor,new Grid<>(PipelineEntity.class));
     }
 
+    @Override
     @PostConstruct
-    private void printMainView(){
-        listPipelines();
+    protected void print() {
+        listItem();
 
         Button addPipelineButton = new Button("New Pipeline", VaadinIcon.PLUS.create());
+        addPipelineButton.addClickListener(e -> editor.edit(new PipelineEntity()));
+
         Button robotGroupViewButton = new Button("Groups of robots", VaadinIcon.GROUP.create());
+        robotGroupViewButton.addClickListener(e -> robotGroupViewButton.getUI().ifPresent(ui -> ui.navigate(RobotsGroupView.class)));
 
         HorizontalLayout actions = new HorizontalLayout(addPipelineButton, robotGroupViewButton);
         add(actions, grid, this.editor);
 
-        grid.removeColumnByKey("stages");
-        grid.setHeight("300px");
-        grid.setColumns("id", "name");
-        grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
-
-        editor.setChangeHandler(() -> {
-            editor.setVisible(false);
-            listPipelines();
-        });
-
-        grid.asSingleSelect().addValueChangeListener(e -> {
-            editor.edit(e.getValue());
-        });
-
-        addPipelineButton.addClickListener(e -> editor.edit(new PipelineEntity()));
-        robotGroupViewButton.addClickListener(e -> robotGroupViewButton.getUI().ifPresent(ui -> ui.navigate(RobotsGroupView.class)));
-
     }
 
-    void listPipelines(){
+    @Override
+    protected void listItem() {
         grid.setItems(repository.findAll());
     }
 }

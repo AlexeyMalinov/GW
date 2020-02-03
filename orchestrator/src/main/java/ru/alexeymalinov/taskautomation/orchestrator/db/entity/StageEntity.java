@@ -12,7 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "stage")
-public class StageEntity {
+public class StageEntity implements PipelineElement{
 
     @Id
     @Column(name="id", unique = true, nullable = false)
@@ -27,7 +27,7 @@ public class StageEntity {
     @JoinColumn(name = "pipeline_id", nullable = false)
     private PipelineEntity pipeline;
 
-    @OneToMany(mappedBy = "stage", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "stage", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<JobEntity> jobs;
 
     @Column(name = "previous_stage_id")
@@ -38,18 +38,6 @@ public class StageEntity {
 
     public StageEntity(PipelineEntity pipeline) {
         this.pipeline = pipeline;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public PipelineEntity getPipeline() {
-        return pipeline;
     }
 
     @Override

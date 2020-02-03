@@ -5,7 +5,7 @@ import ru.alexeymalinov.taskautomation.core.repository.Repository;
 
 public class TaskPublishingWizard {
 
-    Repository repository;
+    private final Repository repository;
 
     private TaskPublishingWizard(Repository repository){
         this.repository = repository;

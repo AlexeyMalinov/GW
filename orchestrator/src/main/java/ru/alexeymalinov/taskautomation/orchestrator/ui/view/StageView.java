@@ -8,6 +8,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
+import org.springframework.boot.autoconfigure.batch.BatchProperties;
 import ru.alexeymalinov.taskautomation.orchestrator.db.entity.JobEntity;
 import ru.alexeymalinov.taskautomation.orchestrator.db.entity.PipelineEntity;
 import ru.alexeymalinov.taskautomation.orchestrator.db.entity.StageEntity;
@@ -18,23 +19,19 @@ import ru.alexeymalinov.taskautomation.orchestrator.ui.editor.PipelineEditor;
 import ru.alexeymalinov.taskautomation.orchestrator.ui.editor.StageEditor;
 
 @Route
-public class StageView extends VerticalLayout implements HasUrlParameter<Integer> {
+public class StageView extends AbstractView<JobRepository, JobEntity, StageEditor> implements HasUrlParameter<Integer> {
 
     private StageRepository stageRepository;
-    private JobRepository jobRepository;
-    private StageEditor editor;
-    private Grid<JobEntity> grid;
     private StageEntity stageEntity;
 
     StageView(StageRepository stageRepository, JobRepository jobRepository, StageEditor editor) {
+        super(jobRepository,editor,new Grid<>(JobEntity.class));
         this.stageRepository = stageRepository;
-        this.jobRepository = jobRepository;
-        this.editor = editor;
-        this.grid = new Grid<>(JobEntity.class);
     }
 
-    private void print() {
-        listStages();
+    @Override
+    public void print() {
+        listItem();
 
         Button addJobButton = new Button("Create Job", VaadinIcon.PLUS.create());
         addJobButton.addClickListener(e -> editor.edit(new JobEntity(stageEntity)));
@@ -44,27 +41,16 @@ public class StageView extends VerticalLayout implements HasUrlParameter<Integer
             backStagesButton.getUI().ifPresent(ui -> ui.navigate(PipelineView.class, stageEntity.getPipeline().getId()));
         });
 
-        Button backPipelineButton = new Button("Pipelines", VaadinIcon.ARROW_BACKWARD.create());
-        backPipelineButton.addClickListener(e -> backPipelineButton.getUI().ifPresent((ui -> ui.navigate(MainView.class))));
+        HorizontalLayout actions = new HorizontalLayout(addJobButton, backStagesButton, backMainButton);
 
-        HorizontalLayout actions = new HorizontalLayout(addJobButton, backStagesButton, backPipelineButton);
+        grid.addColumns("taskName", "repositoryUrl", "robotsGroupId", "startTime", "count");
+
         add(actions, grid, this.editor);
+    }
 
-        grid.removeColumnByKey("stage");
-        grid.setHeight("300px");
-        grid.setColumns("id", "name", "taskName", "repositoryUrl", "robotsGroupId", "startTime", "count");
-        grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
-
-        editor.setChangeHandler(() -> {
-            editor.setVisible(false);
-            listStages();
-        });
-
-        grid.asSingleSelect().addValueChangeListener(e -> {
-            editor.edit(e.getValue());
-        });
-
-
+    @Override
+    protected void listItem() {
+        grid.setItems(repository.findAllByStage(stageEntity));
     }
 
 
@@ -73,10 +59,5 @@ public class StageView extends VerticalLayout implements HasUrlParameter<Integer
         stageEntity = stageRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Stage not found"));
         print();
     }
-
-    private void listStages() {
-        grid.setItems(jobRepository.findAllByStage(stageEntity));
-    }
-
 
 }

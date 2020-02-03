@@ -46,10 +46,7 @@ public abstract class AbstractEditor<T1 extends JpaRepository, T2> extends Verti
         setVisible(false);
     }
 
-    public void save() {
-        repository.save(entity);
-        changeHandler.onChange();
-    }
+    public abstract void save();
 
     public abstract void printEditor();
 

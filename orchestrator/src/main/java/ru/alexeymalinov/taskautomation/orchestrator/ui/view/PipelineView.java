@@ -1,64 +1,51 @@
 package ru.alexeymalinov.taskautomation.orchestrator.ui.view;
 
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.Route;
-import ru.alexeymalinov.taskautomation.orchestrator.db.entity.PipelineEntity;
-import ru.alexeymalinov.taskautomation.orchestrator.db.entity.StageEntity;
-import ru.alexeymalinov.taskautomation.orchestrator.db.repository.PipelineRepository;
-import ru.alexeymalinov.taskautomation.orchestrator.db.repository.StageRepository;
+import com.vaadin.flow.router.*;
+import ru.alexeymalinov.taskautomation.orchestrator.db.entity.*;
+import ru.alexeymalinov.taskautomation.orchestrator.db.repository.*;
+import ru.alexeymalinov.taskautomation.orchestrator.service.runner.Impl.PipelineRunnerService;
 import ru.alexeymalinov.taskautomation.orchestrator.ui.editor.PipelineEditor;
 
 @Route
-public class PipelineView extends VerticalLayout implements HasUrlParameter<Integer> {
+public class PipelineView extends AbstractView<StageRepository, StageEntity, PipelineEditor> implements HasUrlParameter<Integer> {
 
-    private StageRepository stageRepository;
-    private PipelineRepository pipelineRepository;
-    private PipelineEditor editor;
-    private Grid<StageEntity> grid;
+    private final RunRepository runRepository;
+    private final PipelineRunnerService pipelineRunnerService;
+    private final PipelineRepository pipelineRepository;
     private PipelineEntity pipelineEntity;
+    private Grid<RunEntity> logGrid = new Grid<>(RunEntity.class);
 
-    PipelineView(StageRepository stageRepository, PipelineRepository pipelineRepository, PipelineEditor editor){
-        this.stageRepository = stageRepository;
+    PipelineView(StageRepository stageRepository, PipelineRepository pipelineRepository, PipelineEditor editor, RunRepository runRepository, PipelineRunnerService pipelineRunnerService) {
+        super(stageRepository, editor, new Grid<>(StageEntity.class));
         this.pipelineRepository = pipelineRepository;
-        this.editor = editor;
-        this.grid = new Grid<>(StageEntity.class);
+        this.runRepository = runRepository;
+        this.pipelineRunnerService = pipelineRunnerService;
     }
 
-    private void print(){
-        listStages();
+    @Override
+    public void print() {
+        listItem();
 
         Button addStageButton = new Button("Create Stage", VaadinIcon.PLUS.create());
+        addStageButton.addClickListener(e -> editor.edit(new StageEntity(pipelineEntity)));
 
-        Button backPipelineButton = new Button("Pipelines", VaadinIcon.ARROW_BACKWARD.create());
-        backPipelineButton.addClickListener(e -> backPipelineButton.getUI().ifPresent((ui -> ui.navigate(MainView.class))));
-
-        HorizontalLayout actions = new HorizontalLayout(addStageButton, backPipelineButton);
-        add(actions, grid, this.editor);
-
-        grid.removeColumnByKey("pipeline");
-        grid.removeColumnByKey("jobs");
-        grid.setHeight("300px");
-        grid.setColumns("id","name","previousStageId", "nextStageId");
-        grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
-
-        editor.setChangeHandler(() -> {
-            editor.setVisible(false);
-            listStages();
+        Button runPipeline = new Button("Run", VaadinIcon.CARET_RIGHT.create());
+        runPipeline.addClickListener(e -> {
+            pipelineRunnerService.run(pipelineEntity, new RunEntity());
         });
 
-        grid.asSingleSelect().addValueChangeListener(e -> {
-            editor.editStage(e.getValue());
-        });
+        Button refreshButton = new Button("Refresh", VaadinIcon.REFRESH.create());
+        refreshButton.addClickListener(e -> listItem());
 
-        addStageButton.addClickListener(e -> editor.editStage(new StageEntity(pipelineEntity)));
+        HorizontalLayout actions = new HorizontalLayout(runPipeline, addStageButton, backMainButton, refreshButton);
+
+        grid.addColumns("previousStageId", "nextStageId");
+
+        add(actions, grid, this.editor, logGrid);
 
     }
 
@@ -69,7 +56,9 @@ public class PipelineView extends VerticalLayout implements HasUrlParameter<Inte
         print();
     }
 
-    private void listStages(){
-        grid.setItems(stageRepository.findByPipeline(pipelineEntity));
+    @Override
+    protected void listItem() {
+        grid.setItems(repository.findByPipeline(pipelineEntity));
+        logGrid.setItems(runRepository.findByPipelineId(pipelineEntity.getId()));
     }
 }

@@ -13,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "job")
-public class JobEntity {
+public class JobEntity implements PipelineElement{
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
@@ -30,7 +30,7 @@ public class JobEntity {
     @Column(name = "repository_url", nullable = false)
     private String repositoryUrl;
 
-    @Column(name = "robots_group_id", nullable = false)
+    @Column(name = "robots_group_id")
     private Integer robotsGroupId;
 
     @Column(name = "start_time", nullable = false)
