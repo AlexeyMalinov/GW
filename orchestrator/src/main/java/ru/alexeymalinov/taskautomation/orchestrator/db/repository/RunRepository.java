@@ -9,4 +9,8 @@ import java.util.List;
 @Repository
 public interface RunRepository extends JpaRepository<RunEntity, Integer> {
     List<RunEntity> findByPipelineId(Integer id);
+    List<RunEntity> findByStatus(String status);
+
+    List<RunEntity> findByUid(String uid);
+    List<RunEntity> findByRobotId(Integer robotId);
 }

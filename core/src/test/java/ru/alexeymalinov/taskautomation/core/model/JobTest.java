@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class JobTest {
 
-    Job job = new Job("job","task","http://localhost:8080",2020,1,1,0,0,0,0,0,"SECONDS");
+    Job job = new Job("", 0, 0, "job","task","http://localhost:8080",2020,1,1,0,0,0,0,0,"SECONDS","");
 
     @Test
     void startTime() {

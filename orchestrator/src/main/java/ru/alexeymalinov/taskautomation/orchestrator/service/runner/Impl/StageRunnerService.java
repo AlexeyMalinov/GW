@@ -40,6 +40,7 @@ public class StageRunnerService implements RunnerService {
             LOGGER.info("invalid pipeline element format", new IllegalArgumentException("invalid pipeline element format"));
             return;
         }
+        LOGGER.info("Start stage name: " + stage.getName() + ", id: " + stage.getId());
 
         if (currentTrace == null) return;
         currentTrace.setStageId(stage.getId());

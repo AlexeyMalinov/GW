@@ -5,6 +5,9 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class Job {
+    private String uid;
+    private Integer id;
+    private Integer robotId;
     private String name;
     private String taskName;
     private String repository;
@@ -17,11 +20,15 @@ public class Job {
     private long period;
     private String timeUnit;
     private int count;
+    private String status;
 
     private Job() {
     }
 
-    public Job(String name,
+    public Job(String uid,
+               Integer id,
+               Integer robotId,
+               String name,
                String taskName,
                String repository,
                int startYear,
@@ -32,7 +39,11 @@ public class Job {
                int startSecond,
                int count,
                long period,
-               String timeUnit) {
+               String timeUnit,
+               String status) {
+        this.uid = uid;
+        this.id = id;
+        this.robotId = robotId;
         this.name = name;
         this.taskName = taskName;
         this.repository = repository;
@@ -45,7 +56,9 @@ public class Job {
         this.count = count;
         this.period = period;
         this.timeUnit = timeUnit;
+        this.status = status;
     }
+
 
     public Job(String name,
                String taskName,
@@ -55,6 +68,9 @@ public class Job {
                long period,
                TimeUnit timeUnit) {
         this(
+                "",
+                0,
+                0,
                 name,
                 taskName,
                 repository,
@@ -66,7 +82,39 @@ public class Job {
                 startTime.getSecond(),
                 count,
                 period,
-                timeUnit.name()
+                timeUnit.name(),
+                ""
+        );
+    }
+
+    public Job(String uid,
+               Integer id,
+               Integer robotId,
+               String name,
+               String taskName,
+               String repository,
+               LocalDateTime startTime,
+               int count,
+               long period,
+               TimeUnit timeUnit,
+               String status) {
+        this(
+                uid,
+                id,
+                robotId,
+                name,
+                taskName,
+                repository,
+                startTime.getYear(),
+                startTime.getMonthValue(),
+                startTime.getDayOfMonth(),
+                startTime.getHour(),
+                startTime.getMinute(),
+                startTime.getSecond(),
+                count,
+                period,
+                timeUnit.name(),
+                status
         );
     }
 
@@ -164,6 +212,38 @@ public class Job {
 
     public void setTimeUnit(String timeUnit) {
         this.timeUnit = timeUnit;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getRobotId() {
+        return robotId;
+    }
+
+    public void setRobotId(Integer robotId) {
+        this.robotId = robotId;
     }
 
     public LocalDateTime startTime() {

@@ -42,13 +42,11 @@ public class JobRunnerService implements RunnerService {
             LOGGER.info("invalid pipeline element format", new IllegalArgumentException("invalid pipeline element format"));
             return;
         }
-        LOGGER.info("Start job");
+        LOGGER.info("Start job name: " + job.getName() + ", id: " + job.getId());
         if (trace == null || job == null) return;
         trace.setJobId(job.getId());
         trace.setStartTime(LocalDateTime.now());
-        LOGGER.info("Job: " + job.getName() + " group of robots id: " + job.getRobotsGroupId());
         RobotsGroupEntity robotsGroupEntity = robotsGroupRepository.findById(job.getRobotsGroupId()).get();
-        LOGGER.info(robotsGroupEntity.toString());
         Set<RobotEntity> robots = robotsGroupEntity.getRobots();
         runJob(robots, trace);
     }

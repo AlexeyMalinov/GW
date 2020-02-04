@@ -1,5 +1,6 @@
 package ru.alexeymalinov.taskautomation.orchestrator.service.runner.Impl;
 
+import com.fasterxml.jackson.databind.ser.impl.StringArraySerializer;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import lombok.*;
 import org.slf4j.Logger;
@@ -11,10 +12,8 @@ import ru.alexeymalinov.taskautomation.orchestrator.service.runner.executiontask
 import ru.alexeymalinov.taskautomation.orchestrator.service.runner.executiontask.Impl.PipelineTask;
 
 import java.util.UUID;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 @Getter
 @SpringComponent
@@ -38,9 +37,9 @@ public class PipelineRunnerService implements RunnerService {
             LOGGER.info("invalid pipeline element format", new IllegalArgumentException("invalid pipeline element format"));
             return;
         }
-        LOGGER.info("Start pipeline");
+        LOGGER.info("Start pipeline with UID: " + trace.getUid());
         RunEntity.RunEntityBuilder builder = RunEntity.builder();
-        builder.uid(UUID.randomUUID().toString());
+        builder.uid(trace.getUid() == null?UUID.randomUUID().toString():trace.getUid());
         builder.pipelineId(pipelineEntity.getId());
 
         trace = builder.build();
