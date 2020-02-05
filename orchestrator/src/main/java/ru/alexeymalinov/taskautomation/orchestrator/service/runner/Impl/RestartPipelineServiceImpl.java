@@ -51,7 +51,7 @@ public class RestartPipelineServiceImpl implements RestartPipelineService {
 
     private List<RunEntity> findStartedPipeline() {
         List<RunEntity> startedPipeline = runRepository.findByStatus(JobStatus.READY.name());
-        startedPipeline.addAll(runRepository.findByStatus(JobStatus.SENT.name()));
+        startedPipeline.addAll(runRepository.findByStatus(JobStatus.STARTED.name()));
         return startedPipeline;
     }
 
