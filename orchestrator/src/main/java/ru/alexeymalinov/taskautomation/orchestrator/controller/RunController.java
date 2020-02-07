@@ -17,7 +17,7 @@ public class RunController {
         this.runService = runService;
     }
 
-    @RequestMapping(value = "/robots/jobs/new/get/{robotsId}", method = RequestMethod.GET, )
+    @GetMapping("/robots/jobs/new/get/{robotsId}")
     private List<Job> getNewJobs(@PathVariable("robotsId") Integer robotId) {
         List<RunEntity> runLogs = runService.findRunLogsByRobotIdAndJobStatus(robotId, JobStatus.READY);
         runService.setStatusToRunLogs(runLogs, JobStatus.STARTED);
