@@ -1,8 +1,8 @@
 package ru.alexeymalinov.taskautomation.core.repository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.alexeymalinov.taskautomation.core.json.Converter;
 import ru.alexeymalinov.taskautomation.core.model.Task;
 
 import java.io.File;
@@ -16,7 +16,7 @@ public class LocalRepository implements Repository{
     private final static Logger LOGGER = LoggerFactory.getLogger(LocalRepository.class);
     private final static String IO_TASK_ERROR = "Error converting task file";
 
-    private final static Converter<Task> TASK_CONVERTER = new Converter<>();
+    private final static ObjectMapper MAPPER = new ObjectMapper();
 
     private final String path;
 
@@ -34,7 +34,7 @@ public class LocalRepository implements Repository{
     public Task getTask(String taskName) {
         File file = new File(path + "/" + taskName);
         try {
-            return TASK_CONVERTER.toObject(file, Task.class);
+            return MAPPER.readValue(file, Task.class);
         } catch (IOException e) {
             LOGGER.error(IO_TASK_ERROR);
         }
@@ -49,7 +49,7 @@ public class LocalRepository implements Repository{
     public void publishTask(Task task) {
         File file = new File(path + "/" + task.getName());
         try {
-            TASK_CONVERTER.toJSON(file, task);
+            MAPPER.writeValue(file, task);
         } catch (IOException e) {
             LOGGER.error(IO_TASK_ERROR, e);
         }

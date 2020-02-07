@@ -2,17 +2,20 @@ package ru.alexeymalinov.taskautomation.robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.alexeymalinov.taskautomation.core.model.JobStatus;
 import ru.alexeymalinov.taskautomation.core.services.RobotService;
 import ru.alexeymalinov.taskautomation.core.services.clirobotservice.CliScriptService;
 import ru.alexeymalinov.taskautomation.core.services.guirobotservice.GuiScriptService;
 import ru.alexeymalinov.taskautomation.robot.handlers.Handler;
 import ru.alexeymalinov.taskautomation.robot.handlers.JobFileHandler;
+import ru.alexeymalinov.taskautomation.robot.handlers.OrchestratorHandler;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Launcher {
 
@@ -29,26 +32,23 @@ public class Launcher {
             LOGGER.error(errorsText.getString("error.io"), exc);
         }
         ScheduledExecutorService taskPool = Executors.newScheduledThreadPool(1);
-        List<Handler> handlers = initializeHandlers(properties, taskPool);
-        ExecutorService pool = Executors.newCachedThreadPool();
-        startThreads(handlers, pool);
+        ScheduledExecutorService handlerPool = Executors.newScheduledThreadPool(1);
+        List<RobotService> robotServices = initializeServices(properties);
+        Handler fileJobHandler = new JobFileHandler(initializeServices(properties), taskPool, properties.getProperty("local.job.file.path"));
+        Handler orchestratorHandler = new OrchestratorHandler(robotServices,taskPool,Integer.valueOf(properties.getProperty("orchestrator.robot.id")),properties.getProperty("orchestrator.url"));
+        Handler restartHandler = new OrchestratorHandler(robotServices,taskPool,Integer.valueOf(properties.getProperty("orchestrator.robot.id")),properties.getProperty("orchestrator.url"), JobStatus.STARTED);
+        handlerPool.submit(restartHandler);
+        handlerPool.scheduleAtFixedRate(orchestratorHandler, 0, 1 , TimeUnit.MINUTES);
+        handlerPool.submit(fileJobHandler);
+
         String exit = "";
         while(!exit.equals("exit")){
             System.out.println("Please enter exit to stop the robot");
             exit = new Scanner(System.in).nextLine();
         }
-        stopApp(taskPool, pool);
+        stopApp(taskPool, handlerPool);
     }
 
-
-    /**
-     * Инициализирует все доступные в данном роботе обработчики заданий
-     */
-    private static List<Handler> initializeHandlers(Properties properties, ScheduledExecutorService pool) {
-        List<Handler>handlers = new ArrayList<>();
-        handlers.add(new JobFileHandler(initializeServices(properties), pool, properties.getProperty("local.job.file.path")));
-        return handlers;
-    }
 
     /**
      * Инициализирует список существующих в роботе сервисов
@@ -67,18 +67,6 @@ public class Launcher {
         }
     }
 
-
-
-    /**
-     * Стартует потоки в заданном пуле потоков, на основе списка запускаемых объектов
-     * @param runnableList
-     * @param pool
-     */
-    private static void startThreads(List<? extends Runnable> runnableList, ExecutorService pool){
-        for (Runnable runnable : runnableList) {
-            pool.submit(runnable);
-        }
-    }
 
     /**
      * Читает конфигурационный файл с свойствами робота

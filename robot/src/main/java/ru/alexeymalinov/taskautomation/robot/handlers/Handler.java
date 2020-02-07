@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import ru.alexeymalinov.taskautomation.core.model.Job;
 import ru.alexeymalinov.taskautomation.core.model.Task;
 import ru.alexeymalinov.taskautomation.core.repository.Repository;
-import ru.alexeymalinov.taskautomation.core.repository.RepositoryFactory;
 import ru.alexeymalinov.taskautomation.core.services.RobotService;
+import ru.alexeymalinov.taskautomation.robot.TaskExecutor;
 import ru.alexeymalinov.taskautomation.robot.executor.TaskExecutorFactory;
 
 import java.time.Duration;
@@ -31,11 +31,11 @@ public abstract class Handler implements Runnable {
         if (job.getPeriod() == 0 || job.getCount() > 1) {
             for (int i = 1; i <= job.getCount(); i++) {
                 LOGGER.debug("job: " + job.getName() + " started without period");
-                pool.schedule(TaskExecutorFactory.getTaskExecutor(getTask(job, repository), services), getDelay(job.startTime()), TimeUnit.SECONDS);
+                pool.schedule(getTaskExecutor(job,repository, services), getDelay(job.startTime()), TimeUnit.SECONDS);
             }
         } else if (job.getPeriod() > 0) {
             LOGGER.debug("job: " + job.getName() + " started with period in seconds: " + TimeUnit.SECONDS.convert(job.getPeriod(), job.timeUnit()));
-            pool.scheduleAtFixedRate(TaskExecutorFactory.getTaskExecutor(getTask(job, repository), services)
+            pool.scheduleAtFixedRate(getTaskExecutor(job, repository, services)
                     , getDelay(job.startTime())
                     , TimeUnit.SECONDS.convert(job.getPeriod(), job.timeUnit())
                     , TimeUnit.SECONDS);
@@ -43,7 +43,18 @@ public abstract class Handler implements Runnable {
         LOGGER.debug("job: " + job.getName() + " completed");
     }
 
-    private Task getTask(Job job, Repository repository) {
+    /**
+     * Возвращает исполнителя задач
+     * @param job
+     * @param repository
+     * @param services
+     * @return
+     */
+    protected TaskExecutor getTaskExecutor(Job job, Repository repository, List<RobotService> services){
+        return TaskExecutorFactory.getTaskExecutor(getTask(job, repository), services);
+    }
+
+    protected Task getTask(Job job, Repository repository) {
         return repository.getTask(job.getTaskName());
     }
 

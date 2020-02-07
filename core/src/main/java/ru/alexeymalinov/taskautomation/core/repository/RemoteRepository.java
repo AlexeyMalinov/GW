@@ -1,20 +1,20 @@
 package ru.alexeymalinov.taskautomation.core.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.alexeymalinov.taskautomation.core.json.Converter;
 import ru.alexeymalinov.taskautomation.core.model.Task;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import static ru.alexeymalinov.taskautomation.core.http.HttpRequest.*;
 
 public class RemoteRepository implements Repository {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(RemoteRepository.class);
-    private final static Converter<Task> TASK_CONVERTER = new Converter<>();
+    private final static ObjectMapper MAPPER = new ObjectMapper();
     private final static String TASK_PATH = "/tasks";
     private final static String DELETE_PATH = "/delete";
     private final static String ADD_PATH = "/add";
@@ -25,6 +25,8 @@ public class RemoteRepository implements Repository {
     private final static String JSON_PROCESSING_EXCEPTION = "Task JSON has an invalid format";
     private final static String TASK_DELETED = "task deleted";
     private final static String PARAMETER_NAME_TO_DELETE_TASK = "?name=";
+    private final static String CONTENT_TYPE = "application/json";
+    private final static String CHARSET_NAME = "utf-8";
     private final String repositoryUrl;
 
     public RemoteRepository(String repositoryUrl) {
@@ -55,7 +57,7 @@ public class RemoteRepository implements Repository {
             throw new IllegalArgumentException(TASK_NOT_FOUND);
         }
         try {
-            return TASK_CONVERTER.toObject(message, Task.class);
+            return MAPPER.readValue(message, Task.class);
         } catch (JsonProcessingException e) {
             LOGGER.error(JSON_PROCESSING_EXCEPTION, e);
         }
@@ -71,7 +73,7 @@ public class RemoteRepository implements Repository {
     public void publishTask(Task task) {
         String taskString = "";
         try {
-            taskString = TASK_CONVERTER.toJSON(task);
+            taskString = MAPPER.writeValueAsString(task);
         } catch (JsonProcessingException e) {
             LOGGER.error(JSON_PROCESSING_EXCEPTION, e);
         }
@@ -82,7 +84,7 @@ public class RemoteRepository implements Repository {
             LOGGER.error(MALFORMED_URL_EXCEPTION_DESCRIPTION, e);
         }
         try {
-            System.out.println(postRequest(url, taskString));
+            System.out.println(postRequest(url, taskString, CONTENT_TYPE, CHARSET_NAME));
         } catch (IOException e) {
             LOGGER.error(REPOSITORY_UNAVAILABLE, e);
         }
@@ -134,62 +136,6 @@ public class RemoteRepository implements Repository {
             return false;
         }
         return true;
-    }
-
-    private String getRequest(URL url) throws IOException {
-        String message = "";
-        HttpURLConnection connection = null;
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            try (InputStream in = connection.getInputStream()) {
-                message = readInputStream(in);
-            }
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-        return message;
-    }
-
-    private String postRequest(URL url, String string) throws IOException {
-        String message = null;
-        HttpURLConnection connection = null;
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("charset", "utf-8");
-            try (OutputStream out = connection.getOutputStream()) {
-                writeOutputStream(out, string);
-            }
-            try (InputStream in = connection.getInputStream()) {
-                message = readInputStream(in);
-            }
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-        return message;
-    }
-
-    private String readInputStream(InputStream in) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
-        }
-        return sb.toString();
-    }
-
-    private void writeOutputStream(OutputStream out, String string) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
-        writer.write(string);
-        writer.flush();
     }
 
 }
