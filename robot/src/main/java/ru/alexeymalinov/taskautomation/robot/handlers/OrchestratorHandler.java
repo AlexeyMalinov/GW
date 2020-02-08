@@ -39,8 +39,7 @@ public class OrchestratorHandler extends Handler {
         }
         for (Job job : jobs) {
             LOGGER.info("schedule job: " + job.getName());
-            Repository repository = RepositoryFactory.getRepository(job.getRepository());
-            schedule(job, repository);
+            schedule(job);
         }
     }
 

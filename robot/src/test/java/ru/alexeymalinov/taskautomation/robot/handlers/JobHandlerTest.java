@@ -27,6 +27,6 @@ class JobHandlerTest {
         Mockito.when(repositoryMock.getTask("minimize_all_windows")).thenReturn(taskMock);
         Mockito.when(serviceMock.checkTask(taskMock)).thenReturn(true);
         Handler handler= new JobFileHandler(Collections.singletonList(serviceMock), pool, "./src/test/resources/jobs.txt");
-        handler.schedule(job,repositoryMock);
+        handler.schedule(job);
     }
 }

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import ru.alexeymalinov.taskautomation.core.model.Job;
 import ru.alexeymalinov.taskautomation.core.model.Task;
 import ru.alexeymalinov.taskautomation.core.repository.Repository;
+import ru.alexeymalinov.taskautomation.core.repository.RepositoryFactory;
 import ru.alexeymalinov.taskautomation.core.services.RobotService;
 import ru.alexeymalinov.taskautomation.robot.TaskExecutor;
 import ru.alexeymalinov.taskautomation.robot.executor.TaskExecutorFactory;
@@ -27,7 +28,8 @@ public abstract class Handler implements Runnable {
         this.services = services;
     }
 
-    protected void schedule(Job job, Repository repository) {
+    protected void schedule(Job job) {
+        Repository repository = RepositoryFactory.getRepository(job.getRepository());
         if (job.getPeriod() == 0 || job.getCount() > 1) {
             for (int i = 1; i <= job.getCount(); i++) {
                 LOGGER.debug("job: " + job.getName() + " started without period");
