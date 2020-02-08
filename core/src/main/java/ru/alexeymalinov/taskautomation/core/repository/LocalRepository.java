@@ -62,10 +62,6 @@ public class LocalRepository implements Repository{
     @Override
     public void removeTask(String taskName) {
         File file = new File(path + "/" + taskName);
-        boolean isDelete = file.delete();
-        if(isDelete){
-            //TODO корректно описать ситуацию когда файл не удалился
-        }
     }
 
     /**
