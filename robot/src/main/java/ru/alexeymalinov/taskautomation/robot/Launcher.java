@@ -35,11 +35,14 @@ public class Launcher {
         ScheduledExecutorService handlerPool = Executors.newScheduledThreadPool(1);
         List<RobotService> robotServices = initializeServices(properties);
         Handler fileJobHandler = new JobFileHandler(initializeServices(properties), taskPool, properties.getProperty("local.job.file.path"));
-        Handler orchestratorHandler = new OrchestratorHandler(robotServices,taskPool,Integer.valueOf(properties.getProperty("orchestrator.robot.id")),properties.getProperty("orchestrator.url"));
-        Handler restartHandler = new OrchestratorHandler(robotServices,taskPool,Integer.valueOf(properties.getProperty("orchestrator.robot.id")),properties.getProperty("orchestrator.url"), JobStatus.STARTED);
-        handlerPool.submit(restartHandler);
-        handlerPool.scheduleAtFixedRate(orchestratorHandler, 0, 1 , TimeUnit.MINUTES);
         handlerPool.submit(fileJobHandler);
+        if(properties.getProperty("orchestrator.robot.id") != null && properties.getProperty("orchestrator.url") != null)
+        {
+            Handler orchestratorHandler = new OrchestratorHandler(robotServices, taskPool, Integer.valueOf(properties.getProperty("orchestrator.robot.id")), properties.getProperty("orchestrator.url"));
+            Handler restartHandler = new OrchestratorHandler(robotServices, taskPool, Integer.valueOf(properties.getProperty("orchestrator.robot.id")), properties.getProperty("orchestrator.url"), JobStatus.STARTED);
+            handlerPool.submit(restartHandler);
+            handlerPool.scheduleAtFixedRate(orchestratorHandler, 0, 1, TimeUnit.MINUTES);
+        }
 
         String exit = "";
         while(!exit.equals("exit")){
