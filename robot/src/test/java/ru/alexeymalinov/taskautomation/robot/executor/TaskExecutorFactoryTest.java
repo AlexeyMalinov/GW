@@ -17,7 +17,7 @@ class TaskExecutorFactoryTest {
         Task task = new Task();
         RobotService serviceMock = Mockito.mock(RobotService.class);
         TaskExecutor actualExecutor = TaskExecutorFactory.getTaskExecutor(task, Collections.singletonList(serviceMock));
-        TaskExecutor expectedExecutor = new LocalTaskExecutorI(task, Collections.singletonList(serviceMock));
+        TaskExecutor expectedExecutor = new LocalTaskExecutor(task, Collections.singletonList(serviceMock));
         assertEquals(expectedExecutor, actualExecutor);
     }
 }

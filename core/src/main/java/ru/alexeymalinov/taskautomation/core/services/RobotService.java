@@ -4,7 +4,7 @@ import ru.alexeymalinov.taskautomation.core.model.Task;
 
 public interface RobotService {
 
-    void notifyService(Task task);
+    void execute(Task task);
 
     Operation[] getOperations();
 

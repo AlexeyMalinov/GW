@@ -14,7 +14,7 @@ public interface TaskExecutor extends Runnable {
     default void startTask(Task task, List<RobotService> services){
         RobotService service = findService(task, services);
         if(service != null) {
-            service.notifyService(task);
+            service.execute(task);
         }
     }
 

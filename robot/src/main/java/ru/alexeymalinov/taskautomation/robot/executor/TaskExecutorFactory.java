@@ -11,7 +11,7 @@ import java.util.List;
 public class TaskExecutorFactory {
 
     public static TaskExecutor getTaskExecutor(Task task, List<RobotService> services) {
-        return new LocalTaskExecutorI(task, services);
+        return new LocalTaskExecutor(task, services);
     }
 
     public static TaskExecutor getTaskExecutor(Job job, Task task, List<RobotService> service, OrchestratorConnection connection) {

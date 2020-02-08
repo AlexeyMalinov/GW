@@ -9,14 +9,14 @@ import ru.alexeymalinov.taskautomation.robot.TaskExecutor;
 import java.util.List;
 import java.util.Objects;
 
-public class LocalTaskExecutorI implements TaskExecutor {
+public class LocalTaskExecutor implements TaskExecutor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LocalTaskExecutorI.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocalTaskExecutor.class);
 
     private final List<RobotService> services;
     private final Task task;
 
-    public LocalTaskExecutorI(Task task, List<RobotService> services){
+    public LocalTaskExecutor(Task task, List<RobotService> services){
         this.task = task;
         this.services = services;
     }
@@ -38,7 +38,7 @@ public class LocalTaskExecutorI implements TaskExecutor {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LocalTaskExecutorI that = (LocalTaskExecutorI) o;
+        LocalTaskExecutor that = (LocalTaskExecutor) o;
         return Objects.equals(services, that.services) &&
                 Objects.equals(task, that.task);
     }

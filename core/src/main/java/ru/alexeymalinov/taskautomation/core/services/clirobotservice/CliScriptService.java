@@ -28,7 +28,7 @@ public class CliScriptService implements RobotService {
     }
 
     @Override
-    public void notifyService(Task task) {
+    public void execute(Task task) {
         if (task == null) return;
         if (checkTask(task)) {
             LOGGER.info("start task: " + task.getName() + ", with operation: " + task.getOperationName());
