@@ -1,9 +1,9 @@
 package ru.alexeymalinov.taskautomation.repository.service.Impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.alexeymalinov.taskautomation.core.json.Converter;
 import ru.alexeymalinov.taskautomation.core.model.Task;
 import ru.alexeymalinov.taskautomation.repository.db.entity.TaskEntity;
 import ru.alexeymalinov.taskautomation.repository.db.repository.TaskRepository;
@@ -14,6 +14,7 @@ import java.util.List;
 @Service
 public class TaskServiceImpl implements TaskService {
 
+    private final static ObjectMapper MAPPER = new ObjectMapper();
     private final TaskRepository taskRepository;
 
     public TaskServiceImpl(TaskRepository taskRepository) {
@@ -37,9 +38,8 @@ public class TaskServiceImpl implements TaskService {
     public void addTask(Task task) {
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setName(task.getName());
-        Converter<Task> converter = new Converter<>();
         try {
-            taskEntity.setValue(converter.toJSON(task));
+            taskEntity.setValue(MAPPER.writeValueAsString(task));
         } catch (JsonProcessingException e) {
             //TODO Логирование
             e.printStackTrace();

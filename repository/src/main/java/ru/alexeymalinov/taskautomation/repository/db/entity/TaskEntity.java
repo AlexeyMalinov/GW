@@ -20,7 +20,7 @@ public class TaskEntity {
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 
-    @Column(name = "value", columnDefinition = "JSON")
+    @Column(name = "value")
     private String value;
 
     public TaskEntity() {
