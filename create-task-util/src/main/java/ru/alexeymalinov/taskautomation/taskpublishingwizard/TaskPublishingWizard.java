@@ -7,7 +7,7 @@ public interface TaskPublishingWizard {
     boolean publishTask(Task task);
     void deleteTask(String name);
 
-    static TaskPublishingWizardImpl getInstance(Repository repository) {
+    static TaskPublishingWizard getInstance(Repository repository) {
         return new TaskPublishingWizardImpl(repository);
     }
 }
