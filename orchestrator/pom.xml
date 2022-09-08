@@ -17,7 +17,7 @@
     <properties>
         <java.version>13</java.version>
         <vaadin.version>14.1.16</vaadin.version>
-        <postgres.version>42.2.8</postgres.version>
+        <postgres.version>42.4.1</postgres.version>
     </properties>
 
     <dependencies>
