@@ -15,7 +15,7 @@
 	<description>repository for tasks</description>
 
 	<properties>
-		<postgres.version>42.2.8</postgres.version>
+		<postgres.version>42.4.1</postgres.version>
 		<java.version>13</java.version>
 	</properties>
 
